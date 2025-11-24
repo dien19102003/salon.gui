@@ -33,7 +33,7 @@ export const metadata = {
   description: 'Overview of your salon operations.',
 };
 
-const serviceChartData = services.slice(0, 4).map(s => ({ service: s.name, bookings: Math.floor(Math.random() * 50) + 10, fill: `hsl(var(--chart-${s.id}))` }));
+const serviceChartData = services.slice(0, 4).map(s => ({ service: s.name, bookings: Math.floor(Math.random() * 50) + 10, fill: `var(--color-chart-${services.findIndex(cs => cs.id === s.id) + 1})` }));
 
 const serviceChartConfig = services.slice(0, 4).reduce((acc, s, i) => {
   acc[s.name] = {
@@ -105,12 +105,12 @@ export default function AdminDashboardPage() {
             <RevenueChart />
           </CardContent>
         </Card>
-        <Card className="lg:col-span-3">
+        <Card className="lg:col-span-3 flex flex-col">
           <CardHeader>
             <CardTitle>Popular Services</CardTitle>
             <CardDescription>Distribution of bookings by service type.</CardDescription>
           </CardHeader>
-          <CardContent className="flex-1 pb-0">
+          <CardContent className="flex-1 flex items-center justify-center pb-0">
             <ServicesChart serviceChartData={serviceChartData} serviceChartConfig={serviceChartConfig} />
           </CardContent>
         </Card>

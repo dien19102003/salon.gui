@@ -4,9 +4,11 @@ import {
     ChartContainer,
     ChartTooltip,
     ChartTooltipContent,
-    ChartConfig
+    ChartConfig,
+    ChartLegend,
+    ChartLegendContent,
 } from "@/components/ui/chart"
-import { BarChart as RechartsBarChart, XAxis, YAxis, CartesianGrid, PieChart, Pie, Bar } from "recharts"
+import { Bar as RechartsBar, BarChart as RechartsBarChart, XAxis, YAxis, CartesianGrid, Pie, PieChart as RechartsPieChart } from "recharts"
 
 const revenueChartData = [
     { month: "Jan", revenue: 18600 },
@@ -32,7 +34,7 @@ export function RevenueChart() {
                 <XAxis dataKey="month" tickLine={false} tickMargin={10} axisLine={false} />
                 <YAxis tickLine={false} axisLine={false} tickMargin={10} tickFormatter={(value) => `$${Number(value) / 1000}k`} />
                 <ChartTooltip content={<ChartTooltipContent hideIndicator />} />
-                <Bar dataKey="revenue" fill="var(--color-revenue)" radius={4} />
+                <RechartsBar dataKey="revenue" fill="var(--color-revenue)" radius={4} />
             </RechartsBarChart>
         </ChartContainer>
     )
@@ -47,9 +49,9 @@ export function ServicesChart({ serviceChartData, serviceChartConfig }: ServiceC
     return (
         <ChartContainer
             config={serviceChartConfig}
-            className="mx-auto aspect-square h-[250px]"
+            className="mx-auto aspect-square h-full max-h-[300px] pb-0"
         >
-            <PieChart>
+            <RechartsPieChart>
                 <ChartTooltip
                     cursor={false}
                     content={<ChartTooltipContent hideLabel />}
@@ -61,7 +63,11 @@ export function ServicesChart({ serviceChartData, serviceChartConfig }: ServiceC
                     innerRadius={60}
                     strokeWidth={5}
                 />
-            </PieChart>
+                 <ChartLegend
+                    content={<ChartLegendContent nameKey="service" />}
+                    className="-translate-y-2 flex-wrap gap-2 [&>*]:basis-1/4 [&>*]:justify-center"
+                 />
+            </RechartsPieChart>
         </ChartContainer>
     )
 }
