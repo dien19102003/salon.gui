@@ -92,4 +92,10 @@
   .admin-dashboard-layout {
     @apply bg-admin-background;
   }
+  
+  /* Admin layout sidebar positioning - push sidebar below header */
+  .admin-layout-wrapper .group.peer > div[class*="fixed"] {
+    top: 4rem !important;
+    height: calc(100vh - 4rem) !important;
+  }
 }
