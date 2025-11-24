@@ -28,7 +28,7 @@ import {
   ChartTooltipContent,
   ChartConfig
 } from "@/components/ui/chart"
-import { Bar, BarChart as RechartsBarChart, XAxis, YAxis, CartesianGrid, ResponsiveContainer, PieChart, Pie } from "recharts"
+import { BarChart as RechartsBarChart, XAxis, YAxis, CartesianGrid, ResponsiveContainer, PieChart, Pie, Bar } from "recharts"
 import { bookings, services } from '@/lib/data';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
@@ -155,8 +155,7 @@ export default function AdminDashboardPage() {
                         nameKey="service"
                         innerRadius={60}
                         strokeWidth={5}
-                    >
-                    </Pie>
+                    />
                 </PieChart>
             </ChartContainer>
           </CardContent>
