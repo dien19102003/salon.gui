@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --background: 111 25% 95%; /* light, desaturated green */
+    --background: 111 25% 97%; /* Lighter background for main app */
     --foreground: 120 10% 20%;
     --card: 0 0% 100%;
     --card-foreground: 120 10% 20%;
@@ -29,14 +29,18 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 120 10% 20%;
-    --sidebar-primary: 132 23% 38%;
-    --sidebar-primary-foreground: 111 25% 95%;
-    --sidebar-accent: 130 15% 90%;
-    --sidebar-accent-foreground: 132 23% 38%;
-    --sidebar-border: 130 15% 85%;
-    --sidebar-ring: 132 23% 38%;
+
+    /* Custom vars for admin layout */
+    --admin-background: 220 13% 97%; /* Light Gray #F5F7FA */
+
+    --sidebar-background: 132 23% 38%;
+    --sidebar-foreground: 111 25% 95%;
+    --sidebar-primary: 111 25% 95%;
+    --sidebar-primary-foreground: 132 23% 38%;
+    --sidebar-accent: 132 23% 43%;
+    --sidebar-accent-foreground: 111 25% 95%;
+    --sidebar-border: 132 23% 43%;
+    --sidebar-ring: 47 28% 56%;
   }
   .dark {
     --background: 130 10% 12%;
@@ -63,11 +67,15 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+
+    /* Custom dark vars for admin layout */
+    --admin-background: 130 10% 15%;
+
     --sidebar-background: 130 10% 12%;
     --sidebar-foreground: 111 25% 95%;
-    --sidebar-primary: 132 23% 38%;
-    --sidebar-primary-foreground: 111 25% 95%;
-    --sidebar-accent: 130 10% 25%;
+    --sidebar-primary: 111 25% 95%;
+    --sidebar-primary-foreground: 132 23% 38%;
+    --sidebar-accent: 130 10% 22%;
     --sidebar-accent-foreground: 111 25% 95%;
     --sidebar-border: 130 10% 25%;
     --sidebar-ring: 47 28% 56%;
@@ -80,5 +88,8 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+  .admin-dashboard-layout {
+    @apply bg-admin-background;
   }
 }

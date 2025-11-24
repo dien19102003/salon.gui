@@ -12,6 +12,7 @@ import {
   SidebarMenuButton,
   SidebarInset,
   SidebarTrigger,
+  SidebarFooter,
 } from '@/components/ui/sidebar';
 import {
   LayoutDashboard,
@@ -20,7 +21,9 @@ import {
   Scissors,
   UserCog,
   LogOut,
-  ChevronDown
+  ChevronDown,
+  Settings,
+  LifeBuoy
 } from 'lucide-react';
 import { Logo } from '@/components/icons/logo';
 import { Button } from '@/components/ui/button';
@@ -41,18 +44,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen">
-        <Sidebar collapsible="icon">
+       <div className="flex min-h-screen bg-admin-background">
+        <Sidebar>
           <SidebarHeader>
             <div
               className={cn(
-                'flex items-center gap-2 px-2',
+                'flex items-center gap-2 p-2',
                 'group-data-[collapsible=icon]:justify-center'
               )}
             >
-              <Logo className="h-6 w-auto text-primary" />
-              <span className="font-bold text-lg text-primary group-data-[collapsible=icon]:hidden">
-                Admin
+              <Logo className="h-7 w-auto text-sidebar-primary" />
+              <span className="font-bold text-lg text-sidebar-primary group-data-[collapsible=icon]:hidden">
+                Shear Bliss
               </span>
             </div>
           </SidebarHeader>
@@ -73,31 +76,54 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               ))}
             </SidebarMenu>
           </SidebarContent>
+           <SidebarFooter>
+            <SidebarMenu>
+                 <SidebarMenuItem>
+                    <Link href="/login" legacyBehavior passHref>
+                        <SidebarMenuButton tooltip="Logout">
+                            <LogOut />
+                            <span>Logout</span>
+                        </SidebarMenuButton>
+                    </Link>
+                </SidebarMenuItem>
+            </SidebarMenu>
+           </SidebarFooter>
         </Sidebar>
         <SidebarInset>
-          <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background/95 px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6 backdrop-blur-sm sm:backdrop-blur-none">
+          <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-admin-background/95 px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6 backdrop-blur-sm sm:backdrop-blur-none">
              <SidebarTrigger className="sm:hidden" />
              <div className="flex-1"></div>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="flex items-center gap-2 rounded-full">
-                     <Avatar className="h-6 w-6">
+                  <Button variant="ghost" className="flex items-center gap-2 rounded-full p-2 h-auto">
+                     <Avatar className="h-8 w-8">
                       <AvatarImage src="https://picsum.photos/seed/admin-user/40/40" alt="Admin" data-ai-hint="person" />
                       <AvatarFallback>A</AvatarFallback>
                     </Avatar>
-                    <span className="hidden sm:inline">Admin User</span>
-                    <ChevronDown className="h-4 w-4 text-muted-foreground"/>
+                    <div className="hidden sm:flex flex-col items-start">
+                        <span className="font-medium text-sm">Admin User</span>
+                        <span className="text-xs text-muted-foreground">admin@shearbliss.com</span>
+                    </div>
+                    <ChevronDown className="h-4 w-4 text-muted-foreground ml-1 hidden sm:block"/>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>Settings</DropdownMenuItem>
-                  <DropdownMenuItem>Support</DropdownMenuItem>
-                  <DropdownMenuSeparator />
                   <DropdownMenuItem>
-                    <LogOut className="mr-2 h-4 w-4"/>
-                    Logout
+                    <Settings className="mr-2 h-4 w-4"/>
+                    <span>Settings</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <LifeBuoy className="mr-2 h-4 w-4"/>
+                    <span>Support</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link href="/login">
+                        <LogOut className="mr-2 h-4 w-4"/>
+                        <span>Logout</span>
+                    </Link>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
