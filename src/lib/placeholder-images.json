@@ -1,3 +1,76 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero-banner",
+      "description": "A stylish and modern salon interior.",
+      "imageUrl": "https://images.unsplash.com/photo-1600948836101-f9ffda59d250?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxzYWxvbiUyMGludGVyaW9yfGVufDB8fHx8MTc2Mzk1MjYyNnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "salon interior"
+    },
+    {
+      "id": "service-haircut",
+      "description": "A person getting a stylish haircut.",
+      "imageUrl": "https://images.unsplash.com/photo-1599351431408-433ef72fe40b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxoYWlyY3V0fGVufDB8fHx8MTc2MzkwNDQyMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "haircut"
+    },
+    {
+      "id": "service-coloring",
+      "description": "A vibrant hair coloring process.",
+      "imageUrl": "https://images.unsplash.com/photo-1712213396688-c6f2d536671f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxoYWlyJTIwY29sb3Jpbmd8ZW58MHx8fHwxNzYzOTE0MzI1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "hair coloring"
+    },
+    {
+      "id": "service-styling",
+      "description": "Elegant hair styling for an event.",
+      "imageUrl": "https://images.unsplash.com/photo-1712641970791-ea9a566c93bc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxoYWlyJTIwc3R5bGluZ3xlbnwwfHx8fDE3NjM4OTgxNzh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "hair styling"
+    },
+    {
+      "id": "service-treatment",
+      "description": "A relaxing hair treatment session.",
+      "imageUrl": "https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxoYWlyJTIwdHJlYXRtZW50fGVufDB8fHx8MTc2MzkxNDMyNXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "hair treatment"
+    },
+    {
+      "id": "stylist-emily",
+      "description": "Portrait of stylist Emily Carter.",
+      "imageUrl": "https://images.unsplash.com/photo-1546961329-78bef0414d7c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHx3b21hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc2Mzk1OTYyM3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "woman portrait"
+    },
+    {
+      "id": "stylist-liam",
+      "description": "Portrait of stylist Liam Johnson.",
+      "imageUrl": "https://images.unsplash.com/photo-1636377985931-898218afd306?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxtYW4lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjM5MjU3NzF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "man portrait"
+    },
+    {
+      "id": "stylist-olivia",
+      "description": "Portrait of stylist Olivia Chen.",
+      "imageUrl": "https://images.unsplash.com/photo-1716237442727-85739bd947a6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8d29tYW4lMjBwb3J0cmFpdCUyMHByb2Zlc3Npb25hbHxlbnwwfHx8fDE3NjM5MTk4NzN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "woman portrait professional"
+    },
+    {
+      "id": "stylist-noah",
+      "description": "Portrait of stylist Noah Rodriguez.",
+      "imageUrl": "https://images.unsplash.com/photo-1620837759372-a3879520481a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxtYW4lMjBwb3J0cmFpdCUyMHByb2Zlc3Npb25hbHxlbnwwfHx8fDE3NjM5MTk4NzN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "man portrait professional"
+    },
+    {
+      "id": "contact-map",
+      "description": "A map showing the location of the salon.",
+      "imageUrl": "https://images.unsplash.com/photo-1522678073884-26b1b87526e4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Y2l0eSUyMG1hcHxlbnwwfHx8fDE3NjM5MzEzMDN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "city map"
+    },
+    {
+      "id": "salon-intro-1",
+      "description": "A picture of the salon's comfortable waiting area.",
+      "imageUrl": "https://images.unsplash.com/photo-1723101917533-4fc9149c3684?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxzYWxvbiUyMHdhaXRpbmd8ZW58MHx8fHwxNzYzOTgyMzU1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "salon waiting"
+    },
+    {
+      "id": "salon-intro-2",
+      "description": "A picture of the salon's styling stations.",
+      "imageUrl": "https://images.unsplash.com/photo-1761839256840-7780a45b85dc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzYWxvbiUyMHN0YXRpb25zfGVufDB8fHx8MTc2Mzk4MjM1NXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "salon stations"
+    }
+  ]
 }
