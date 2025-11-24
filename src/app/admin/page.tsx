@@ -28,7 +28,7 @@ import {
   ChartTooltipContent,
   ChartConfig
 } from "@/components/ui/chart"
-import { Bar, BarChart as RechartsBarChart, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Pie, PieChart, Cell } from "recharts"
+import { Bar, BarChart as RechartsBarChart, XAxis, YAxis, CartesianGrid, ResponsiveContainer, PieChart, Pie } from "recharts"
 import { bookings, services } from '@/lib/data';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
