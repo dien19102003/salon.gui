@@ -15,7 +15,6 @@ import { format } from 'date-fns';
 import { Calendar as CalendarIcon, CheckCircle, ArrowRight, ArrowLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { Service, Stylist } from '@/lib/data';
-import { TimeSuggestions } from './time-suggestions';
 
 interface BookingFlowProps {
   services: Service[];
@@ -31,6 +30,13 @@ const steps = [
   { id: 4, title: 'Your Details' },
   { id: 5, title: 'Confirmation' },
 ];
+
+const availableTimes = [
+  '09:00 AM', '09:30 AM', '10:00 AM', '10:30 AM',
+  '11:00 AM', '11:30 AM', '01:00 PM', '01:30 PM',
+  '02:00 PM', '02:30 PM', '03:00 PM', '03:30 PM',
+];
+
 
 export function BookingFlow({ services, stylists, initialServiceId, initialStylistId }: BookingFlowProps) {
   const [currentStep, setCurrentStep] = useState(1);
@@ -154,46 +160,50 @@ export function BookingFlow({ services, stylists, initialServiceId, initialStyli
             )}
 
             {currentStep === 3 && selectedService && selectedStylist && (
-              <div className="space-y-4">
-                 <p className="text-muted-foreground">Pick a date and let our AI suggest the best times.</p>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "w-full justify-start text-left font-normal text-base py-6",
-                        !selectedDate && "text-muted-foreground"
-                      )}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {selectedDate ? format(selectedDate, "PPP") : <span>Pick a date</span>}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <Calendar
-                      mode="single"
-                      selected={selectedDate}
-                      onSelect={(date) => {setSelectedDate(date); setSelectedTime(undefined);}}
-                      initialFocus
-                      disabled={(date) => date < new Date(new Date().setDate(new Date().getDate() - 1))}
-                    />
-                  </PopoverContent>
-                </Popover>
+               <div className="space-y-4">
+                <p className="text-muted-foreground">Pick a date and time for your appointment.</p>
+               <Popover>
+                 <PopoverTrigger asChild>
+                   <Button
+                     variant={"outline"}
+                     className={cn(
+                       "w-full justify-start text-left font-normal text-base py-6",
+                       !selectedDate && "text-muted-foreground"
+                     )}
+                   >
+                     <CalendarIcon className="mr-2 h-4 w-4" />
+                     {selectedDate ? format(selectedDate, "PPP") : <span>Pick a date</span>}
+                   </Button>
+                 </PopoverTrigger>
+                 <PopoverContent className="w-auto p-0">
+                   <Calendar
+                     mode="single"
+                     selected={selectedDate}
+                     onSelect={(date) => {setSelectedDate(date); setSelectedTime(undefined);}}
+                     initialFocus
+                     disabled={(date) => date < new Date(new Date().setDate(new Date().getDate() - 1))}
+                   />
+                 </PopoverContent>
+               </Popover>
 
                 {selectedDate && (
-                    <TimeSuggestions
-                      key={selectedDate.toISOString()}
-                      input={{
-                        serviceType: selectedService.name,
-                        stylistId: selectedStylist.id,
-                        preferredDay: format(selectedDate, 'yyyy-MM-dd'),
-                        durationMinutes: selectedService.duration,
-                      }}
-                      onSelectTime={setSelectedTime}
-                      selectedTime={selectedTime}
-                    />
+                  <div className="space-y-4">
+                    <p className="text-muted-foreground text-sm">Select an available time:</p>
+                    <div className="grid grid-cols-3 gap-2 md:grid-cols-4">
+                        {availableTimes.map((time) => (
+                        <Button
+                            key={time}
+                            variant={selectedTime === time ? 'default' : 'outline'}
+                            className={cn("text-base justify-center py-6 rounded-lg", selectedTime === time && "shadow-lg")}
+                            onClick={() => setSelectedTime(time)}
+                        >
+                            {time}
+                        </Button>
+                        ))}
+                    </div>
+                  </div>
                 )}
-              </div>
+             </div>
             )}
 
             {currentStep === 4 && (
