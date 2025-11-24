@@ -21,7 +21,7 @@ import {
 const SIDEBAR_COOKIE_NAME = "sidebar_state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
 const SIDEBAR_WIDTH_OPEN = "260px"
-const SIDEBAR_WIDTH_COLLAPSED = "68px"
+const SIDEBAR_WIDTH_COLLAPSED = "70px"
 const SIDEBAR_KEYBOARD_SHORTCUT = "b"
 
 type SidebarContext = {
@@ -180,9 +180,9 @@ const Sidebar = React.forwardRef<
       <aside
         ref={ref}
         className={cn(
-            "fixed top-16 z-40 hidden h-[calc(100vh-4rem)] border-r bg-background transition-all duration-300 md:block",
+            "fixed top-0 z-40 hidden h-screen border-r bg-background transition-all duration-300 md:block",
             "w-[260px]",
-            state === 'collapsed' && "w-[68px]",
+            state === 'collapsed' && "w-[70px]",
             className
         )}
         {...props}
@@ -206,7 +206,7 @@ const SidebarTrigger = React.forwardRef<
       data-sidebar="trigger"
       variant="ghost"
       size="icon"
-      className={cn("h-8 w-8 text-muted-foreground hidden md:flex", className, state === 'collapsed' && 'mx-auto')}
+      className={cn("h-8 w-8 text-muted-foreground", className)}
       onClick={(event) => {
         onClick?.(event)
         toggleSidebar()
@@ -232,7 +232,7 @@ const SidebarInset = React.forwardRef<
         "relative flex min-h-svh flex-1 flex-col",
         "transition-[margin-left,margin-right] duration-200 ease-in-out",
         "md:group-data-[state=expanded]/sidebar-wrapper:ml-[260px]",
-        "md:group-data-[state=collapsed]/sidebar-wrapper:ml-[68px]",
+        "md:group-data-[state=collapsed]/sidebar-wrapper:ml-[70px]",
         className
       )}
       {...props}
@@ -355,7 +355,7 @@ const sidebarMenuButtonVariants = cva(
   {
     variants: {
       variant: {
-        default: "text-muted-foreground hover:bg-accent hover:text-accent-foreground data-[active=true]:bg-accent data-[active=true]:text-accent-foreground",
+        default: "text-muted-foreground hover:bg-accent/50 hover:text-foreground data-[active=true]:bg-accent data-[active=true]:text-accent-foreground",
       },
     },
     defaultVariants: {

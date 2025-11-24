@@ -10,7 +10,6 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  SidebarInset,
   SidebarFooter,
   SidebarTrigger,
   useSidebar,
@@ -24,6 +23,7 @@ import {
   LogOut,
   Settings,
   LifeBuoy,
+  PanelLeft,
 } from 'lucide-react';
 import { Logo } from '@/components/icons/logo';
 import { Button } from '@/components/ui/button';
@@ -37,6 +37,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
+import { Plus_Jakarta_Sans } from 'next/font/google';
+
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  variable: '--font-jakarta',
+});
 
 const menuItems = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
@@ -52,15 +58,26 @@ function AdminHeader() {
     const currentItem = menuItems.find(item => item.href === pathname);
     return currentItem?.label || 'Dashboard';
   };
+  const { toggleSidebar } = useSidebar();
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 flex h-16 shrink-0 items-center gap-4 border-b bg-background px-4 shadow-sm md:px-6">
+    <header className="fixed top-0 left-0 right-0 z-30 flex h-16 shrink-0 items-center gap-4 border-b bg-background px-4 shadow-sm md:px-6">
       <div className="flex items-center gap-2">
-         <SidebarTrigger className="md:hidden" />
-         <Logo className="h-6 w-auto text-primary hidden md:block" />
+         <Button
+            variant="ghost"
+            size="icon"
+            className="md:hidden"
+            onClick={toggleSidebar}
+         >
+            <PanelLeft />
+            <span className="sr-only">Toggle Sidebar</span>
+        </Button>
+         <Link href="/" className="md:hidden">
+            <Logo className="h-6 w-auto text-primary" />
+         </Link>
       </div>
 
-      <div className="flex-1 md:ml-[244px] group-data-[state=collapsed]/sidebar-wrapper:md:ml-[54px] transition-all duration-300">
+      <div className="flex-1 md:ml-[260px] group-data-[state=collapsed]/sidebar-wrapper:md:ml-[70px] transition-all duration-300">
          <h1 className="text-lg font-semibold text-foreground">{getPageTitle()}</h1>
       </div>
 
@@ -115,14 +132,11 @@ function AdminSidebar() {
           <SidebarHeader>
              <div
               className={cn(
-                'flex items-center gap-3 p-4 transition-all duration-300',
+                'flex h-16 items-center border-b px-4 transition-all duration-300',
                  state === 'collapsed' ? 'justify-center' : 'justify-between'
               )}
             >
-              <Logo className={cn("h-6 w-auto text-primary", state === 'collapsed' ? "block" : "hidden")} />
-              <span className={cn("font-bold text-lg text-primary", state === 'collapsed' ? "hidden" : "block")}>
-                Shear Bliss
-              </span>
+              <Logo className={cn("h-6 w-auto text-primary", state === 'collapsed' ? "hidden" : "block")} />
               <SidebarTrigger />
             </div>
           </SidebarHeader>
@@ -136,7 +150,7 @@ function AdminSidebar() {
                       tooltip={item.label}
                     >
                       <item.icon />
-                      <span>{item.label}</span>
+                      <span className={cn("transition-opacity duration-200", state === 'collapsed' ? "opacity-0" : "opacity-100")}>{item.label}</span>
                     </SidebarMenuButton>
                   </Link>
                 </SidebarMenuItem>
@@ -149,7 +163,7 @@ function AdminSidebar() {
                 <Link href="/login" className="contents">
                   <SidebarMenuButton tooltip="Logout">
                     <LogOut />
-                    <span>Logout</span>
+                    <span className={cn("transition-opacity duration-200", state === 'collapsed' ? "opacity-0" : "opacity-100")}>Logout</span>
                   </SidebarMenuButton>
                 </Link>
               </SidebarMenuItem>
@@ -162,9 +176,9 @@ function AdminSidebar() {
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
-      <div className="min-h-screen w-full bg-muted/40">
+      <div className={cn("min-h-screen w-full bg-muted/40 font-sans", jakarta.variable)}>
         <AdminSidebar />
-        <div className="flex flex-col md:ml-[260px] group-data-[state=collapsed]/sidebar-wrapper:md:ml-[68px] transition-all duration-300">
+        <div className="flex flex-col md:ml-[260px] group-data-[state=collapsed]/sidebar-wrapper:md:ml-[70px] transition-all duration-300">
           <AdminHeader />
           <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8 mt-16">{children}</main>
         </div>
