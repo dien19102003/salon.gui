@@ -243,4 +243,47 @@ export const bookings: Booking[] = [
     status: 'Cancelled',
     price: 80,
   },
+  {
+    id: 'BK007',
+    customerName: 'Alex Smith',
+    customerEmail: 'alex.s@example.com',
+    serviceName: 'Full Color',
+    stylistName: 'Emily Carter',
+    date: '2024-07-15',
+    time: '02:00 PM',
+    status: 'Completed',
+    price: 150,
+  },
 ];
+
+export type Customer = {
+    id: string;
+    name: string;
+    email: string;
+    phone: string;
+    joinDate: string;
+    totalBookings: number;
+    totalSpent: number;
+    walletBalance: number;
+};
+
+const customerData = [
+  { name: 'Alex Smith', email: 'alex.s@example.com', phone: '(123) 456-7890', joinDate: '2024-01-15' },
+  { name: 'Jordan Miller', email: 'jordan.m@example.com', phone: '(234) 567-8901', joinDate: '2024-02-20' },
+  { name: 'Casey Green', email: 'casey.g@example.com', phone: '(345) 678-9012', joinDate: '2024-03-10' },
+  { name: 'Taylor White', email: 'taylor.w@example.com', phone: '(456) 789-0123', joinDate: '2024-04-05' },
+  { name: 'Jamie Brown', email: 'jamie.b@example.com', phone: '(567) 890-1234', joinDate: '2024-05-25' },
+  { name: 'Chris Lee', email: 'chris.l@example.com', phone: '(678) 901-2345', joinDate: '2024-06-18' },
+];
+
+export const customers: Customer[] = customerData.map((customer, index) => {
+    const customerBookings = bookings.filter(b => b.customerEmail === customer.email && b.status === 'Completed');
+    const totalSpent = customerBookings.reduce((sum, b) => sum + b.price, 0);
+    return {
+        id: `CUST-00${index + 1}`,
+        ...customer,
+        totalBookings: bookings.filter(b => b.customerEmail === customer.email).length,
+        totalSpent,
+        walletBalance: Math.random() * 50 // Random wallet balance between 0 and 50
+    };
+});

@@ -23,6 +23,8 @@ import {
   LogOut,
   Settings,
   LifeBuoy,
+  ChevronLeft,
+  MenuIcon
 } from 'lucide-react';
 import { Logo } from '@/components/icons/logo';
 import { Button } from '@/components/ui/button';
@@ -46,23 +48,32 @@ const inter = Inter({
 const menuItems = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/admin/bookings', label: 'Bookings', icon: Calendar },
-  { href: '/admin/customers', label: 'Customers', icon: Users },
-  { href: '/admin/services', label: 'Services', icon: Scissors },
-  { href: '/admin/staff', label: 'Staff', icon: UserCog },
+  { href: '/admin/customers', label: 'Khách hàng', icon: Users },
+  { href: '/admin/services', label: 'Dịch vụ', icon: Scissors },
+  { href: '/admin/staff', label: 'Nhân viên', icon: UserCog },
 ];
 
 function AdminHeader() {
-    const getPageTitle = () => {
-    const pathname = usePathname();
-    const currentItem = menuItems.find(item => item.href === pathname);
-    return currentItem?.label || 'Dashboard';
-  };
-  
+    const { toggleSidebar } = useSidebar();
+
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 flex h-16 shrink-0 items-center gap-4 border-b bg-background px-4 shadow-sm md:px-6">
-      <div className="flex-1 md:ml-[260px] group-data-[state=collapsed]/sidebar-wrapper:md:ml-[70px] transition-all duration-300">
-        <h1 className="text-lg font-semibold text-foreground">{getPageTitle()}</h1>
-      </div>
+    <header className="fixed top-0 left-0 right-0 z-30 flex h-16 items-center gap-4 border-b bg-background px-4 shadow-sm md:px-6">
+        {/* Sidebar Trigger */}
+        <Button
+            variant="ghost"
+            size="icon"
+            className="md:hidden"
+            onClick={toggleSidebar}
+        >
+            <MenuIcon className="h-5 w-5" />
+            <span className="sr-only">Toggle Sidebar</span>
+        </Button>
+
+        {/* Dynamic margin for main content */}
+        <div className="flex-1 md:ml-[260px] group-data-[state=collapsed]/sidebar-wrapper:md:ml-[70px] transition-all duration-300">
+            {/* Header content can go here if needed, or it can be empty */}
+        </div>
+
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -87,17 +98,17 @@ function AdminHeader() {
           <DropdownMenuSeparator />
           <DropdownMenuItem>
             <Settings className="mr-2 h-4 w-4" />
-            <span>Settings</span>
+            <span>Cài đặt</span>
           </DropdownMenuItem>
           <DropdownMenuItem>
             <LifeBuoy className="mr-2 h-4 w-4" />
-            <span>Support</span>
+            <span>Hỗ trợ</span>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link href="/login" className="cursor-pointer">
               <LogOut className="mr-2 h-4 w-4" />
-              <span>Logout</span>
+              <span>Đăng xuất</span>
             </Link>
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -116,7 +127,7 @@ function AdminSidebar() {
         <div
           className={cn(
             'flex h-16 items-center border-b px-4 transition-all duration-300',
-            state === 'collapsed' ? 'justify-center' : 'justify-between'
+             'justify-between'
           )}
         >
           <div
@@ -125,14 +136,19 @@ function AdminSidebar() {
               state === 'collapsed' && 'justify-center'
             )}
           >
-            <Logo
-              className={cn(
-                'h-6 w-auto text-primary',
-                state === 'collapsed' ? 'hidden' : 'block'
-              )}
-            />
+             <Link href="/admin">
+                <Logo
+                className={cn(
+                    'h-6 w-auto text-primary transition-all duration-300',
+                    state === 'collapsed' ? 'hidden' : 'block'
+                )}
+                />
+             </Link>
           </div>
-          <SidebarTrigger onClick={toggleSidebar} />
+          {/* Use SidebarTrigger from the library */}
+          <Button variant="ghost" size="icon" onClick={toggleSidebar}>
+             <ChevronLeft className={cn("h-5 w-5 transition-transform duration-300", state === 'collapsed' ? "rotate-180" : "rotate-0")} />
+          </Button>
         </div>
       </SidebarHeader>
       <SidebarContent>
@@ -141,14 +157,14 @@ function AdminSidebar() {
             <SidebarMenuItem key={item.href}>
               <Link href={item.href} className="contents">
                 <SidebarMenuButton
-                  isActive={pathname === item.href}
+                  isActive={pathname.startsWith(item.href)}
                   tooltip={item.label}
                 >
-                  <item.icon />
+                  <item.icon className="h-5 w-5" />
                   <span
                     className={cn(
-                      'transition-opacity duration-200',
-                      state === 'collapsed' ? 'opacity-0' : 'opacity-100'
+                      'transition-opacity duration-200 whitespace-nowrap',
+                      state === 'collapsed' ? 'opacity-0 hidden' : 'opacity-100'
                     )}
                   >
                     {item.label}
@@ -164,8 +180,8 @@ function AdminSidebar() {
           <SidebarMenuItem>
             <Link href="/login" className="contents">
               <SidebarMenuButton tooltip="Logout">
-                <LogOut />
-                <span className={cn("transition-opacity duration-200", state === 'collapsed' ? "opacity-0" : "opacity-100")}>Logout</span>
+                <LogOut className="h-5 w-5" />
+                <span className={cn("transition-opacity duration-200 whitespace-nowrap", state === 'collapsed' ? "opacity-0 hidden" : "opacity-100")}>Logout</span>
               </SidebarMenuButton>
             </Link>
           </SidebarMenuItem>
