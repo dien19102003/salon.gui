@@ -95,9 +95,9 @@ export default function BookingsPage() {
             <Badge
                 variant="outline"
                 className={cn({
-                    'bg-green-100 text-green-700 border-green-200': record.status === 'Confirmed' || record.status === 'Completed',
-                    'bg-yellow-100 text-yellow-700 border-yellow-200': record.status === 'Pending',
-                    'bg-red-100 text-red-700 border-red-200': record.status === 'Cancelled',
+                    'text-green-700 bg-green-50 border-green-200': record.status === 'Confirmed' || record.status === 'Completed',
+                    'text-yellow-700 bg-yellow-50 border-yellow-200': record.status === 'Pending',
+                    'text-red-700 bg-red-50 border-red-200': record.status === 'Cancelled',
                 }, 'font-medium py-1')}
                 >
                 {record.status}
@@ -139,9 +139,11 @@ export default function BookingsPage() {
               Manage all appointments for your salon.
             </CardDescription>
           </div>
-          <Button>
-            <PlusCircle className="mr-2 h-4 w-4" />
-            Add Booking
+          <Button asChild>
+            <Link href="/admin/bookings/new">
+                <PlusCircle className="mr-2 h-4 w-4" />
+                Add Booking
+            </Link>
           </Button>
         </div>
       </CardHeader>
