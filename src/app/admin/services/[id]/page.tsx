@@ -30,22 +30,20 @@ import {
 import { Button } from '@/components/ui/button';
 import { services, branches, type Service, type BranchPrice } from '@/lib/data';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Edit, PlusCircle, Settings2 } from 'lucide-react';
+import { ArrowLeft, Settings2 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 export default function ServiceDetailPage({ params }: { params: { id: string } }) {
   const service = services.find(s => s.id === params.id);
   
   // State for the price management dialog
   const [open, setOpen] = useState(false);
-  const [selectedBranch, setSelectedBranch] = useState<BranchPrice | null>(null);
-  const [currentPrice, setCurrentPrice] = useState(0);
-  const [isActive, setIsActive] = useState(false);
+  const [branchPrices, setBranchPrices] = useState(service?.branchPricing || []);
 
   if (!service) {
     return (
@@ -58,22 +56,37 @@ export default function ServiceDetailPage({ params }: { params: { id: string } }
     )
   }
 
-  const handleBranchSelect = (branchId: string) => {
-    const branchPrice = service.branchPricing.find(p => p.branchId === branchId) || null;
-    setSelectedBranch(branchPrice);
-    setCurrentPrice(branchPrice?.price || 0);
-    setIsActive(branchPrice?.status === 'Active' || false);
+  const handlePriceChange = (branchId: string, price: number) => {
+    setBranchPrices(prevPrices => {
+      const existing = prevPrices.find(p => p.branchId === branchId);
+      if (existing) {
+        return prevPrices.map(p => p.branchId === branchId ? { ...p, price } : p);
+      }
+      return [...prevPrices, { branchId, price, status: 'Inactive' }];
+    });
+  };
+
+  const handleStatusChange = (branchId: string, isActive: boolean) => {
+     setBranchPrices(prevPrices => {
+      const existing = prevPrices.find(p => p.branchId === branchId);
+      const newStatus = isActive ? 'Active' : 'Inactive';
+      if (existing) {
+        return prevPrices.map(p => p.branchId === branchId ? { ...p, status: newStatus } : p);
+      }
+      return [...prevPrices, { branchId, price: 0, status: newStatus }];
+    });
   };
 
   const handleSaveChanges = () => {
-    console.log('Saving changes:', {
-      branchId: selectedBranch?.branchId,
-      price: currentPrice,
-      status: isActive ? 'Active' : 'Inactive',
-    });
+    // Here you would typically make an API call to save the changes
+    console.log('Saving changes:', branchPrices);
+    // For demo purposes, we can update the service in memory, but this won't persist.
+    service.branchPricing = branchPrices;
     setOpen(false);
-    setSelectedBranch(null);
   };
+  
+  // Create a map for quick lookup
+  const priceMap = new Map(branchPrices.map(p => [p.branchId, p]));
 
   return (
     <div className="space-y-6">
@@ -122,45 +135,54 @@ export default function ServiceDetailPage({ params }: { params: { id: string } }
                                     Manage Prices
                                 </Button>
                             </DialogTrigger>
-                            <DialogContent className="sm:max-w-[480px]">
+                            <DialogContent className="sm:max-w-lg">
                                 <DialogHeader>
-                                <DialogTitle>Manage Branch Price</DialogTitle>
+                                <DialogTitle>Manage Branch Prices for '{service.name}'</DialogTitle>
                                 <DialogDescription>
-                                    Select a branch to adjust the price and availability for the '{service.name}' service.
+                                    Adjust prices and availability for each branch. Click save when you're done.
                                 </DialogDescription>
                                 </DialogHeader>
-                                <div className="grid gap-6 py-4">
-                                    <div className="space-y-2">
-                                        <Label htmlFor="branch">Branch</Label>
-                                        <Select onValueChange={handleBranchSelect}>
-                                            <SelectTrigger id="branch">
-                                                <SelectValue placeholder="Select a branch..." />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                {branches.map(branch => (
-                                                    <SelectItem key={branch.id} value={branch.id}>
-                                                        {branch.name}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
+                                <ScrollArea className="max-h-[60vh] pr-6">
+                                    <div className="grid gap-6 py-4">
+                                    {branches.map(branch => {
+                                        const branchPrice = priceMap.get(branch.id);
+                                        const price = branchPrice?.price ?? service.price;
+                                        const isActive = branchPrice?.status === 'Active';
+                                        
+                                        return (
+                                        <div key={branch.id} className="grid grid-cols-4 items-center gap-4 border-b pb-4">
+                                            <Label htmlFor={`branch-${branch.id}`} className="col-span-4 text-base font-semibold">{branch.name}</Label>
+                                            
+                                            <div className="col-span-2 space-y-2">
+                                                <Label htmlFor={`price-${branch.id}`}>Price ($)</Label>
+                                                <Input
+                                                    id={`price-${branch.id}`}
+                                                    type="number"
+                                                    defaultValue={price}
+                                                    onChange={(e) => handlePriceChange(branch.id, Number(e.target.value))}
+                                                    className="w-full"
+                                                />
+                                            </div>
+                                            
+                                            <div className="col-span-2 flex flex-col items-start space-y-2">
+                                                 <Label htmlFor={`status-${branch.id}`}>Status</Label>
+                                                 <div className="flex items-center gap-2">
+                                                    <Switch
+                                                        id={`status-${branch.id}`}
+                                                        checked={isActive}
+                                                        onCheckedChange={(checked) => handleStatusChange(branch.id, checked)}
+                                                    />
+                                                    <span className="text-sm text-muted-foreground">{isActive ? 'Active' : 'Inactive'}</span>
+                                                 </div>
+                                            </div>
+                                        </div>
+                                        )
+                                    })}
                                     </div>
-                                    {selectedBranch && (
-                                        <>
-                                            <div className="space-y-2">
-                                                <Label htmlFor="price">Price ($)</Label>
-                                                <Input id="price" type="number" value={currentPrice} onChange={(e) => setCurrentPrice(Number(e.target.value))} />
-                                            </div>
-                                            <div className="flex items-center space-x-2">
-                                                <Switch id="status" checked={isActive} onCheckedChange={setIsActive} />
-                                                <Label htmlFor="status">{isActive ? 'Active' : 'Inactive'}</Label>
-                                            </div>
-                                        </>
-                                    )}
-                                </div>
+                                </ScrollArea>
                                 <DialogFooter>
                                     <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
-                                    <Button onClick={handleSaveChanges} disabled={!selectedBranch}>Save changes</Button>
+                                    <Button onClick={handleSaveChanges}>Save changes</Button>
                                 </DialogFooter>
                             </DialogContent>
                         </Dialog>
@@ -194,7 +216,7 @@ export default function ServiceDetailPage({ params }: { params: { id: string } }
                                 {service.branchPricing.length === 0 && (
                                     <TableRow>
                                         <TableCell colSpan={3} className="h-24 text-center">
-                                            No branch-specific pricing set.
+                                            No branch-specific pricing set. Uses default price.
                                         </TableCell>
                                     </TableRow>
                                 )}
