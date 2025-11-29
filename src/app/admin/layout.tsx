@@ -45,7 +45,7 @@ const fontSans = Inter({
 });
 
 const menuItems = [
-  { href: '/admin', label: 'Bảng điều khiển', icon: LayoutDashboard },
+  { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/admin/bookings', label: 'Lịch hẹn', icon: Calendar },
   { href: '/admin/customers', label: 'Khách hàng', icon: Users },
   { href: '/admin/services', label: 'Dịch vụ', icon: Scissors },
@@ -54,11 +54,17 @@ const menuItems = [
 ];
 
 function AdminHeader() {
+  const pathname = usePathname();
+  const currentPage = menuItems.find(item => pathname.startsWith(item.href) && (item.href === '/admin' ? pathname === item.href : true));
+  const pageTitle = currentPage ? currentPage.label : 'Admin';
     
   return (
     <header className="fixed top-0 left-0 right-0 z-30 flex h-16 items-center gap-4 border-b bg-background px-4 shadow-sm md:px-6">
-        <div className="transition-all duration-300 md:w-[260px] group-data-[state=collapsed]/sidebar-wrapper:md:w-[70px] flex items-center justify-center">
-             <SidebarTrigger className="ml-auto" />
+        <div className="transition-all duration-300 md:w-[260px] group-data-[state=collapsed]/sidebar-wrapper:md:w-[70px] flex items-center gap-4">
+             <SidebarTrigger />
+             <h1 className="text-lg font-semibold md:text-xl group-data-[state=collapsed]/sidebar-wrapper:hidden">
+                {pageTitle}
+             </h1>
         </div>
 
         <div className="flex flex-1 items-center justify-end gap-4">
