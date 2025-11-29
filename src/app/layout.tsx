@@ -8,7 +8,7 @@ import { Inter } from 'next/font/google';
 const fontSans = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
 export const metadata: Metadata = {
-  title: 'Shear Bliss',
+  title: 'Eggstech Salon',
   description: 'Modern hair salon service booking website',
 };
 

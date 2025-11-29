@@ -7,8 +7,8 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Logo } from "@/components/icons/logo"
 
 export const metadata = {
-    title: 'Tạo tài khoản | Shear Bliss',
-    description: 'Đăng ký tài khoản Shear Bliss mới.',
+    title: 'Tạo tài khoản | Eggstech Salon',
+    description: 'Đăng ký tài khoản Eggstech Salon mới.',
 };
 
 
@@ -19,7 +19,7 @@ export default function RegisterPage() {
         <Logo className="h-8 w-auto text-primary mb-4" />
         <h1 className="text-3xl font-bold">Tạo một tài khoản</h1>
         <p className="text-balance text-muted-foreground">
-          Nhập thông tin của bạn để tạo tài khoản Shear Bliss
+          Nhập thông tin của bạn để tạo tài khoản Eggstech Salon
         </p>
       </div>
       <div className="grid gap-4">

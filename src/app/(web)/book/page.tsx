@@ -2,7 +2,7 @@ import { BookingFlow } from '@/components/booking/booking-flow';
 import { services, stylists } from '@/lib/data';
 
 export const metadata = {
-  title: 'Đặt lịch hẹn | Shear Bliss',
+  title: 'Đặt lịch hẹn | Eggstech Salon',
   description: 'Lên lịch cho lần ghé thăm tiếp theo của bạn với các nhà tạo mẫu tài năng của chúng tôi.',
 };
 

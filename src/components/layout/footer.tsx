@@ -33,7 +33,7 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-8 border-t pt-4 text-center text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} Shear Bliss. Đã đăng ký Bản quyền.</p>
+          <p>&copy; {new Date().getFullYear()} Eggstech Salon. Đã đăng ký Bản quyền.</p>
         </div>
       </div>
     </footer>

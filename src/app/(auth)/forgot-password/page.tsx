@@ -6,8 +6,8 @@ import { Label } from "@/components/ui/label"
 import { Logo } from "@/components/icons/logo"
 
 export const metadata = {
-    title: 'Quên mật khẩu | Shear Bliss',
-    description: 'Đặt lại mật khẩu của bạn cho Shear Bliss.',
+    title: 'Quên mật khẩu | Eggstech Salon',
+    description: 'Đặt lại mật khẩu của bạn cho Eggstech Salon.',
 };
 
 

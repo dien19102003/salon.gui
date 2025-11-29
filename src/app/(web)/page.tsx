@@ -38,7 +38,7 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-black/50" />
         <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-white">
           <h1 className="font-headline text-4xl font-bold md:text-6xl">
-            Trải nghiệm Shear Bliss
+            Trải nghiệm Eggstech Salon
           </h1>
           <p className="mt-4 max-w-2xl text-lg md:text-xl">
             Nơi vẻ đẹp của bạn là niềm đam mê của chúng tôi. Khám phá nghệ thuật của mái tóc đẹp
@@ -86,7 +86,7 @@ export default function HomePage() {
                 Chào mừng đến với Salon của chúng tôi
               </h2>
               <p className="text-muted-foreground">
-                Shear Bliss được thành lập dựa trên ý tưởng rằng cắt tóc phải là một
+                Eggstech Salon được thành lập dựa trên ý tưởng rằng cắt tóc phải là một
                 trải nghiệm, không phải là một công việc vặt. Chúng tôi đã tạo ra một môi trường thư giãn và sang trọng, nơi bạn có thể thư giãn trong khi đội ngũ tài năng của chúng tôi
                 làm nên điều kỳ diệu.
               </p>

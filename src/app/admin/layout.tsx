@@ -74,7 +74,7 @@ function AdminHeader() {
                 <DropdownMenuLabel>
                     <div className="flex flex-col">
                     <span>Quản trị viên</span>
-                    <span className="text-xs font-normal text-muted-foreground">admin@shearbliss.com</span>
+                    <span className="text-xs font-normal text-muted-foreground">admin@eggstechsalon.com</span>
                     </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />

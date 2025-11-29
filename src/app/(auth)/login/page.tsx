@@ -14,8 +14,8 @@ import { Label } from "@/components/ui/label"
 import { Logo } from "@/components/icons/logo"
 
 export const metadata = {
-    title: 'Đăng nhập | Shear Bliss',
-    description: 'Đăng nhập vào tài khoản Shear Bliss của bạn.',
+    title: 'Đăng nhập | Eggstech Salon',
+    description: 'Đăng nhập vào tài khoản Eggstech Salon của bạn.',
 };
 
 export default function LoginPage() {

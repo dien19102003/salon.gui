@@ -7,8 +7,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Clock, MapPin, Phone, Mail } from 'lucide-react';
 
 export const metadata = {
-  title: 'Liên hệ | Shear Bliss',
-  description: 'Liên lạc với Shear Bliss. Tìm vị trí, giờ làm việc và chi tiết liên hệ của chúng tôi.',
+  title: 'Liên hệ | Eggstech Salon',
+  description: 'Liên lạc với Eggstech Salon. Tìm vị trí, giờ làm việc và chi tiết liên hệ của chúng tôi.',
 };
 
 export default function ContactPage() {
@@ -38,7 +38,7 @@ export default function ContactPage() {
                 <Phone className="h-4 w-4" /> (123) 456-7890
               </p>
               <p className="flex items-center gap-2">
-                <Mail className="h-4 w-4" /> contact@shearbliss.com
+                <Mail className="h-4 w-4" /> contact@eggstechsalon.com
               </p>
             </CardContent>
           </Card>

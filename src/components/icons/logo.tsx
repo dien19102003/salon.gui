@@ -7,7 +7,7 @@ export function Logo(props: SVGProps<SVGSVGElement>) {
       viewBox="0 0 100 20"
       width="100"
       height="20"
-      aria-label="Shear Bliss Logo"
+      aria-label="Eggstech Salon Logo"
       {...props}
     >
       <text
@@ -19,7 +19,7 @@ export function Logo(props: SVGProps<SVGSVGElement>) {
         fill="currentColor"
         className="text-foreground"
       >
-        Shear Bliss
+        Eggstech Salon
       </text>
     </svg>
   );

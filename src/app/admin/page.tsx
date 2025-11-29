@@ -29,7 +29,7 @@ import { RevenueChart, ServicesChart } from '@/components/admin/dashboard-charts
 import { ChartConfig } from "@/components/ui/chart"
 
 export const metadata = {
-  title: 'Bảng điều khiển | Shear Bliss Admin',
+  title: 'Bảng điều khiển | Eggstech Salon Admin',
   description: 'Tổng quan về hoạt động salon của bạn.',
 };
 

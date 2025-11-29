@@ -24,7 +24,7 @@ import { cn } from '@/lib/utils';
 import { Pencil } from 'lucide-react';
 
 export const metadata = {
-  title: 'Hồ sơ của tôi | Shear Bliss',
+  title: 'Hồ sơ của tôi | Eggstech Salon',
   description: 'Quản lý hồ sơ, xem các cuộc hẹn sắp tới và lịch sử đặt chỗ của bạn.',
 };
 
@@ -104,7 +104,7 @@ export default function ProfilePage() {
             <CardHeader>
               <CardTitle>Lịch sử đặt chỗ</CardTitle>
               <CardDescription>
-                Hồ sơ về các lần ghé thăm trước đây của bạn tại Shear Bliss.
+                Hồ sơ về các lần ghé thăm trước đây của bạn tại Eggstech Salon.
               </CardDescription>
             </CardHeader>
             <CardContent>
