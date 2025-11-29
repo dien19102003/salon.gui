@@ -101,7 +101,7 @@ export default function ServiceDetailPage({ params }: { params: { id: string } }
         </div>
         <div className="grid gap-6 lg:grid-cols-3">
              <div className="lg:col-span-1 flex flex-col gap-6">
-                <Card className="shadow-none border-border">
+                <Card className="shadow-none border">
                     <CardHeader>
                         <Image 
                             src={service.image.imageUrl} 
@@ -122,7 +122,7 @@ export default function ServiceDetailPage({ params }: { params: { id: string } }
                 </Card>
              </div>
              <div className="lg:col-span-2">
-                <Card className="shadow-none border-border">
+                <Card className="shadow-none border">
                     <CardHeader className="flex-row items-center justify-between">
                        <div>
                          <CardTitle>Branch Pricing</CardTitle>
@@ -229,3 +229,5 @@ export default function ServiceDetailPage({ params }: { params: { id: string } }
     </div>
   );
 }
+
+    
