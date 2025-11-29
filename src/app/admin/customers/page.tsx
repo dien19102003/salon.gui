@@ -1,5 +1,6 @@
 'use client';
 
+import * as React from 'react';
 import {
   Card,
   CardContent,
@@ -7,20 +8,12 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { customers } from '@/lib/data';
+import { customers as allCustomers } from '@/lib/data';
 import {
-  MoreHorizontal,
   PlusCircle,
-  ArrowUpRight
+  ArrowUpRight,
+  MoreHorizontal
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -31,8 +24,107 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import Link from 'next/link';
+import { DataTable, type ColumnDef, type FetchData } from '@/components/ui/data-table';
+import { Customer } from '@/lib/data';
+
+// Simulate an API call
+const fetchCustomers: FetchData<Customer> = async (page, size) => {
+  const total = allCustomers.length;
+  const pageCount = Math.ceil(total / size);
+  const start = (page - 1) * size;
+  const end = start + size;
+  const data = allCustomers.slice(start, end);
+
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        meta: {
+          traceId: `trace-${Date.now()}`,
+          success: true,
+          total,
+          page,
+          size,
+          pageCount,
+          canNext: page < pageCount,
+          canPrev: page > 1,
+        },
+        data,
+      });
+    }, 500); // Simulate network delay
+  });
+};
 
 export default function CustomersPage() {
+  const columns: ColumnDef<Customer>[] = [
+    {
+      key: 'name',
+      title: 'Tên',
+      pathValue: 'name',
+      render: (value, record) => (
+        <div className="flex items-center gap-3">
+          <Avatar className="h-9 w-9">
+            <AvatarImage src={`https://picsum.photos/seed/${record.name.replace(/\s/g, '')}/40/40`} alt={record.name} data-ai-hint="person" />
+            <AvatarFallback>{record.name.charAt(0)}</AvatarFallback>
+          </Avatar>
+          <div className="grid gap-0.5">
+            <p className="font-medium">{record.name}</p>
+            <p className="text-xs text-muted-foreground">{record.id}</p>
+          </div>
+        </div>
+      )
+    },
+    {
+      key: 'email',
+      title: 'Email',
+      pathValue: 'email',
+    },
+    {
+      key: 'phone',
+      title: 'Số điện thoại',
+      pathValue: 'phone',
+    },
+    {
+      key: 'totalBookings',
+      title: 'Số lần đặt',
+      pathValue: 'totalBookings',
+      className: 'text-center'
+    },
+    {
+      key: 'totalSpent',
+      title: 'Tổng chi',
+      pathValue: 'totalSpent',
+      render: (value) => `$${Number(value).toFixed(2)}`
+    },
+    {
+      key: 'actions',
+      title: 'Actions',
+      className: 'text-right',
+      render: (_, record) => (
+        <div className="flex justify-end gap-2">
+           <Button asChild variant="outline" size="sm">
+              <Link href={`/admin/customers/${record.id}`}>
+                  Chi tiết
+                  <ArrowUpRight className="h-4 w-4 ml-2" />
+              </Link>
+           </Button>
+          <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+              <Button aria-haspopup="true" size="icon" variant="ghost">
+              <MoreHorizontal className="h-4 w-4" />
+              <span className="sr-only">Toggle menu</span>
+              </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem>Sửa</DropdownMenuItem>
+              <DropdownMenuItem className="text-destructive">Xóa</DropdownMenuItem>
+          </DropdownMenuContent>
+          </DropdownMenu>
+     </div>
+      )
+    }
+  ];
+
   return (
     <Card>
       <CardHeader>
@@ -50,65 +142,7 @@ export default function CustomersPage() {
         </div>
       </CardHeader>
       <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Tên</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Số điện thoại</TableHead>
-              <TableHead>Số lần đặt</TableHead>
-              <TableHead>Tổng chi</TableHead>
-              <TableHead>
-                <span className="sr-only">Actions</span>
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {customers.map((customer) => (
-              <TableRow key={customer.id}>
-                <TableCell className="font-medium">
-                    <div className="flex items-center gap-3">
-                        <Avatar className="h-9 w-9">
-                            <AvatarImage src={`https://picsum.photos/seed/${customer.name.replace(/\s/g, '')}/40/40`} alt={customer.name} data-ai-hint="person" />
-                            <AvatarFallback>{customer.name.charAt(0)}</AvatarFallback>
-                        </Avatar>
-                        <div className="grid gap-0.5">
-                            <p className="font-medium">{customer.name}</p>
-                            <p className="text-xs text-muted-foreground">{customer.id}</p>
-                        </div>
-                    </div>
-                </TableCell>
-                <TableCell>{customer.email}</TableCell>
-                <TableCell>{customer.phone}</TableCell>
-                <TableCell className="text-center">{customer.totalBookings}</TableCell>
-                <TableCell>${customer.totalSpent.toFixed(2)}</TableCell>
-                <TableCell>
-                    <div className="flex justify-end gap-2">
-                         <Button asChild variant="outline" size="sm">
-                            <Link href={`/admin/customers/${customer.id}`}>
-                                Chi tiết
-                                <ArrowUpRight className="h-4 w-4 ml-2" />
-                            </Link>
-                         </Button>
-                        <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button aria-haspopup="true" size="icon" variant="ghost">
-                            <MoreHorizontal className="h-4 w-4" />
-                            <span className="sr-only">Toggle menu</span>
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Sửa</DropdownMenuItem>
-                            <DropdownMenuItem className="text-destructive">Xóa</DropdownMenuItem>
-                        </DropdownMenuContent>
-                        </DropdownMenu>
-                   </div>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        <DataTable columns={columns} fetchData={fetchCustomers} />
       </CardContent>
     </Card>
   );
