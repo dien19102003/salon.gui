@@ -5,13 +5,12 @@ import { usePathname } from 'next/navigation';
 import {
   SidebarProvider,
   Sidebar,
-  SidebarHeader,
   SidebarContent,
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  SidebarFooter,
-  useSidebar,
+  SidebarTrigger,
+  SidebarHeader
 } from '@/components/ui/sidebar';
 import {
   LayoutDashboard,
@@ -22,7 +21,7 @@ import {
   LogOut,
   Settings,
   LifeBuoy,
-  MenuIcon
+  Users2,
 } from 'lucide-react';
 import { Logo } from '@/components/icons/logo';
 import { Button } from '@/components/ui/button';
@@ -36,9 +35,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
-import { Inter } from 'next/font/google';
+import { Plus_Jakarta_Sans } from 'next/font/google';
 
-const inter = Inter({
+const fontSans = Plus_Jakarta_Sans({
   subsets: ['latin', 'vietnamese'],
   variable: '--font-sans',
 });
@@ -49,26 +48,21 @@ const menuItems = [
   { href: '/admin/customers', label: 'Khách hàng', icon: Users },
   { href: '/admin/services', label: 'Dịch vụ', icon: Scissors },
   { href: '/admin/staff', label: 'Nhân viên', icon: UserCog },
+  { href: '/admin/staff-groups', label: 'Nhóm nhân viên', icon: Users2 },
 ];
 
 function AdminHeader() {
-    const { toggleSidebar } = useSidebar();
-
+    
   return (
-    <header className="fixed top-0 left-0 right-0 z-30 flex h-16 items-center gap-4 border-b bg-background px-4 shadow-sm md:px-6">
-        <div className="flex items-center gap-2">
-            <Button
-                variant="ghost"
-                size="icon"
-                className="shrink-0"
-                onClick={toggleSidebar}
-            >
-                <MenuIcon className="h-5 w-5" />
-                <span className="sr-only">Toggle Sidebar</span>
-            </Button>
-             <Link href="/admin" className="hidden md:block">
-                <Logo className="h-6 w-auto text-primary" />
-             </Link>
+    <header className="fixed top-0 left-0 right-0 z-50 flex h-16 items-center gap-4 border-b bg-background px-4 shadow-sm md:px-6">
+        <div className="flex items-center gap-4">
+            <div className="md:w-[244px] lg:w-[244px] flex items-center gap-2">
+                <Link href="/admin" className="flex items-center gap-2 font-bold text-lg text-primary">
+                    <Logo className="h-6 w-auto" />
+                    <h1 className="font-bold text-lg hidden md:block">Shear Bliss</h1>
+                </Link>
+            </div>
+            <SidebarTrigger className="hidden md:flex" />
         </div>
 
         <div className="flex flex-1 items-center justify-end gap-4">
@@ -116,6 +110,7 @@ function AdminSidebar() {
 
   return (
     <Sidebar>
+        <SidebarHeader className="h-16" />
         <SidebarContent>
             <SidebarMenu>
             {menuItems.map((item) => (
@@ -126,7 +121,7 @@ function AdminSidebar() {
                     tooltip={item.label}
                     >
                     <item.icon className="h-5 w-5" />
-                    <span>
+                    <span className="group-data-[state=collapsed]/sidebar-wrapper:hidden">
                         {item.label}
                     </span>
                     </SidebarMenuButton>
@@ -135,18 +130,6 @@ function AdminSidebar() {
             ))}
             </SidebarMenu>
         </SidebarContent>
-        <SidebarFooter>
-            <SidebarMenu>
-            <SidebarMenuItem>
-                <Link href="/login" className="contents">
-                    <SidebarMenuButton tooltip="Logout">
-                        <LogOut className="h-5 w-5" />
-                        <span>Logout</span>
-                    </SidebarMenuButton>
-                </Link>
-            </SidebarMenuItem>
-            </SidebarMenu>
-      </SidebarFooter>
     </Sidebar>
   );
 }
@@ -154,11 +137,11 @@ function AdminSidebar() {
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
-      <div className={cn('min-h-screen w-full bg-muted/40 font-sans', inter.variable)}>
+      <div className={cn('min-h-screen w-full bg-muted/40 font-sans', fontSans.variable)}>
         <AdminSidebar />
         <div className="flex flex-col mt-16 md:ml-[260px] group-data-[state=collapsed]/sidebar-wrapper:md:ml-[70px] transition-all duration-300">
           <AdminHeader />
-          <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">{children}</main>
+          <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6 bg-gray-100 dark:bg-gray-900">{children}</main>
         </div>
       </div>
     </SidebarProvider>

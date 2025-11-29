@@ -128,6 +128,20 @@ export const services: Service[] = [
   },
 ];
 
+export type StaffGroup = {
+    id: string;
+    name: string;
+    description: string;
+    memberCount: number;
+}
+
+export const staffGroups: StaffGroup[] = [
+    { id: 'senior-stylists', name: 'Stylist cấp cao', description: 'Nhóm các stylist có kinh nghiệm lâu năm.', memberCount: 2 },
+    { id: 'junior-stylists', name: 'Stylist trẻ', description: 'Nhóm các stylist trẻ, tài năng và sáng tạo.', memberCount: 1 },
+    { id: 'trainees', name: 'Thực tập sinh', description: 'Nhóm các bạn đang trong quá trình đào tạo.', memberCount: 1 },
+];
+
+
 export type Stylist = {
   id: string;
   name: string;
@@ -136,6 +150,8 @@ export type Stylist = {
   reviews: number;
   image: ImagePlaceholder;
   bio: string;
+  branchId?: string;
+  groupId?: string;
 };
 
 export const stylists: Stylist[] = [
@@ -146,7 +162,9 @@ export const stylists: Stylist[] = [
     rating: 4.9,
     reviews: 124,
     image: getImage('stylist-emily'),
-    bio: 'With over 10 years of experience, Emily is a master colorist who specializes in creating natural, sun-kissed looks. She loves helping clients express their personality through their hair.'
+    bio: 'With over 10 years of experience, Emily is a master colorist who specializes in creating natural, sun-kissed looks. She loves helping clients express their personality through their hair.',
+    branchId: 'hcm',
+    groupId: 'senior-stylists'
   },
   {
     id: 'liam-johnson',
@@ -155,7 +173,9 @@ export const stylists: Stylist[] = [
     rating: 4.8,
     reviews: 98,
     image: getImage('stylist-liam'),
-    bio: 'Liam is an artist when it comes to sharp, structured cuts. He has a keen eye for detail and excels in both modern and classic men\'s and women\'s short hairstyles.'
+    bio: 'Liam is an artist when it comes to sharp, structured cuts. He has a keen eye for detail and excels in both modern and classic men\'s and women\'s short hairstyles.',
+    branchId: 'hn',
+    groupId: 'senior-stylists'
   },
   {
     id: 'olivia-chen',
@@ -164,7 +184,9 @@ export const stylists: Stylist[] = [
     rating: 5.0,
     reviews: 150,
     image: getImage('stylist-olivia'),
-    bio: 'Olivia is our go-to expert for all things elegant. She creates breathtaking styles for weddings and special events, ensuring every client feels like royalty on their big day.'
+    bio: 'Olivia is our go-to expert for all things elegant. She creates breathtaking styles for weddings and special events, ensuring every client feels like royalty on their big day.',
+    branchId: 'hcm',
+    groupId: 'junior-stylists'
   },
   {
     id: 'noah-rodriguez',
@@ -173,7 +195,9 @@ export const stylists: Stylist[] = [
     rating: 4.9,
     reviews: 85,
     image: getImage('stylist-noah'),
-    bio: 'Noah believes healthy hair is beautiful hair. He is an expert in hair and scalp health, specializing in treatments for all hair types, particularly curly and textured hair.'
+    bio: 'Noah believes healthy hair is beautiful hair. He is an expert in hair and scalp health, specializing in treatments for all hair types, particularly curly and textured hair.',
+    branchId: 'dn',
+    groupId: 'trainees'
   },
 ];
 

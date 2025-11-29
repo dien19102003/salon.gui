@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { stylists as allStylists } from '@/lib/data';
+import { stylists as allStylists, staffGroups } from '@/lib/data';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,12 +17,12 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { MoreHorizontal, PlusCircle, Star } from 'lucide-react';
-import Image from 'next/image';
+import { MoreHorizontal, PlusCircle, Star, ArrowUpRight } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { DataTable, type ColumnDef } from '@/components/ui/data-table';
 import type { Stylist } from '@/lib/data';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import Link from 'next/link';
 
 // Simulate an API call
 const fetchStylists: (page: number, size: number) => Promise<{ meta: any; data: Stylist[]; }> = async (page, size) => {
@@ -67,19 +67,16 @@ export default function StaffPage() {
       )
     },
     {
-      key: 'skills',
-      title: 'Skills',
-      render: (_, record) => (
-        <div className="flex flex-wrap gap-1">
-          {record.skills.slice(0, 3).map(skill => (
-            <Badge key={skill} variant="secondary">{skill}</Badge>
-          ))}
-        </div>
-      )
+      key: 'group',
+      title: 'Nhóm',
+      render: (_, record) => {
+        const group = staffGroups.find(g => g.id === record.groupId);
+        return group ? <Badge variant="secondary">{group.name}</Badge> : 'N/A';
+      }
     },
     {
       key: 'rating',
-      title: 'Rating',
+      title: 'Đánh giá',
       render: (_, record) => (
         <div className="flex items-center gap-1">
             <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
@@ -89,28 +86,35 @@ export default function StaffPage() {
     },
     {
         key: 'status',
-        title: 'Status',
+        title: 'Trạng thái',
         render: () => <Badge variant="outline" className="bg-green-100 text-green-800 border-green-200">Active</Badge>
     },
     {
       key: 'actions',
-      title: <span className="sr-only">Actions</span>,
+      title: 'Hành động',
       className: 'text-right',
-      render: () => (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button aria-haspopup="true" size="icon" variant="ghost">
-              <MoreHorizontal className="h-4 w-4" />
-              <span className="sr-only">Toggle menu</span>
+      render: (_, record) => (
+        <div className="flex justify-end gap-2">
+            <Button asChild variant="outline" size="sm">
+                <Link href={`/admin/staff/${record.id}`}>
+                    Chi tiết
+                    <ArrowUpRight className="h-4 w-4 ml-2" />
+                </Link>
             </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem>View Schedule</DropdownMenuItem>
-            <DropdownMenuItem>Edit</DropdownMenuItem>
-            <DropdownMenuItem className="text-destructive">Deactivate</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+            <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button aria-haspopup="true" size="icon" variant="ghost">
+                <MoreHorizontal className="h-4 w-4" />
+                <span className="sr-only">Toggle menu</span>
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                <DropdownMenuItem asChild><Link href={`/admin/staff/${record.id}/edit`}>Chỉnh sửa</Link></DropdownMenuItem>
+                <DropdownMenuItem className="text-destructive">Vô hiệu hóa</DropdownMenuItem>
+            </DropdownMenuContent>
+            </DropdownMenu>
+        </div>
       )
     }
   ];
@@ -120,14 +124,16 @@ export default function StaffPage() {
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle>Staff Management</CardTitle>
+            <CardTitle>Quản lý nhân viên</CardTitle>
             <CardDescription>
-              Manage your talented team of stylists.
+              Quản lý đội ngũ stylist tài năng của bạn.
             </CardDescription>
           </div>
-          <Button>
-            <PlusCircle className="mr-2 h-4 w-4" />
-            Add Stylist
+          <Button asChild>
+            <Link href="/admin/staff/new">
+                <PlusCircle className="mr-2 h-4 w-4" />
+                Thêm nhân viên
+            </Link>
           </Button>
         </div>
       </CardHeader>
