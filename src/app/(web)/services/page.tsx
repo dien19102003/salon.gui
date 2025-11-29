@@ -1,3 +1,6 @@
+
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -7,16 +10,43 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { services } from '@/lib/data';
+import { services as allServices } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Clock } from 'lucide-react';
+import { useBranch } from '@/context/site-branch-context';
+import { useMemo } from 'react';
 
-export const metadata = {
-  title: 'Our Services | Shear Bliss',
-  description: 'Explore our wide range of professional hair services.',
-};
+// export const metadata = {
+//   title: 'Our Services | Shear Bliss',
+//   description: 'Explore our wide range of professional hair services.',
+// };
 
 export default function ServicesPage() {
+  const { selectedBranch } = useBranch();
+
+  const filteredServices = useMemo(() => {
+    if (selectedBranch === 'all') {
+      return allServices;
+    }
+    return allServices.filter(service => {
+      // Service is available if it has no specific branch pricing (available everywhere)
+      if (service.branchPricing.length === 0) {
+        return true;
+      }
+      // Or if it has an active price for the selected branch
+      return service.branchPricing.some(p => p.branchId === selectedBranch && p.status === 'Active');
+    });
+  }, [selectedBranch]);
+
+  const getPriceForBranch = (service) => {
+    if (selectedBranch === 'all') {
+      return service.price; // Show default price
+    }
+    const branchPrice = service.branchPricing.find(p => p.branchId === selectedBranch);
+    return branchPrice ? branchPrice.price : service.price;
+  };
+
+
   return (
     <div className="container py-12 md:py-20">
       <div className="mx-auto mb-12 max-w-2xl text-center">
@@ -26,7 +56,7 @@ export default function ServicesPage() {
         </p>
       </div>
       <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-        {services.map((service) => (
+        {filteredServices.map((service) => (
           <Card key={service.id} className="flex flex-col overflow-hidden transition-shadow duration-300 hover:shadow-xl">
             <div className="relative h-60 w-full">
               <Image
@@ -48,7 +78,7 @@ export default function ServicesPage() {
                <div className="flex items-center gap-2 text-muted-foreground">
                  <Clock className="h-4 w-4" />
                  <span>{service.duration} min</span>
-                 <span className="text-2xl font-bold text-primary">${service.price}</span>
+                 <span className="text-2xl font-bold text-primary">${getPriceForBranch(service)}</span>
                </div>
               <Button asChild className="rounded-full">
                 <Link href={`/book?service=${service.id}`}>Book Now</Link>
@@ -56,6 +86,11 @@ export default function ServicesPage() {
             </CardFooter>
           </Card>
         ))}
+         {filteredServices.length === 0 && (
+          <div className="sm:col-span-2 lg:col-span-3 text-center py-16">
+            <p className="text-muted-foreground">No services available for the selected branch.</p>
+          </div>
+        )}
       </div>
     </div>
   );

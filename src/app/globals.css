@@ -5,32 +5,32 @@
 
 @layer base {
   :root {
-    --background: 240 10% 99%; /* Light Gray */
-    --foreground: 224 71% 4%; /* Dark Gray */
+    --background: 0 0% 100%;
+    --foreground: 224 71% 4%;
 
-    --card: 0 0% 100%; /* White */
+    --card: 0 0% 100%;
     --card-foreground: 224 71% 4%;
  
     --popover: 0 0% 100%;
     --popover-foreground: 224 71% 4%;
  
-    --primary: 132 41% 36%; /* Brand Green */
+    --primary: 132 41% 36%;
     --primary-foreground: 355 100% 97%;
  
-    --secondary: 240 5% 96%; /* Gray */
+    --secondary: 240 5% 96%;
     --secondary-foreground: 224 71% 4%;
  
-    --muted: 240 5% 90%;
+    --muted: 240 5% 96%; /* Light Gray for main content background */
     --muted-foreground: 240 4% 46%;
  
-    --accent: 145 75% 95%;      /* Light Green for Active/Hover */
+    --accent: 142 90% 96%;      /* Light Green for Active/Hover */
     --accent-foreground: 132 41% 30%; /* Darker Brand Green for text */
  
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 240 6% 90%;
-    --input: 240 6% 90%;
+    --border: 220 13% 91%; /* Subtle border color */
+    --input: 220 13% 91%;
     --ring: 132 41% 36%;
  
     --radius: 0.5rem;
@@ -87,4 +87,24 @@
     @apply bg-background text-foreground;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
+}
+
+/* Custom Admin Layout styles */
+@layer components {
+    .admin-layout {
+        @apply min-h-screen w-full bg-muted font-sans;
+    }
+    .admin-sidebar {
+        @apply fixed top-0 left-0 z-40 hidden h-screen w-[260px] flex-col border-r border-gray-200 bg-white transition-all duration-300 group-data-[state=collapsed]/sidebar-wrapper:w-[70px] md:flex;
+    }
+    .admin-header {
+        @apply fixed top-0 left-0 right-0 z-30 flex h-16 items-center border-b border-gray-200 bg-white px-4 shadow-sm md:px-6;
+    }
+    .admin-main {
+        @apply mt-16 flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6;
+        margin-left: 260px; /* Default margin for expanded sidebar */
+    }
+    .group-data-\[state\=collapsed\]\/sidebar-wrapper .admin-main {
+        margin-left: 70px; /* Margin for collapsed sidebar */
+    }
 }

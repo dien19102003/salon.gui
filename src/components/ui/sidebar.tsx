@@ -176,7 +176,7 @@ const Sidebar = React.forwardRef<
       <aside
         ref={ref}
         className={cn(
-            "fixed top-0 z-40 hidden h-screen border-r bg-background transition-all duration-300 md:block",
+            "fixed top-16 z-20 hidden h-[calc(100vh-64px)] flex-col border-r bg-background transition-all duration-300 md:flex",
             "w-[260px]",
             state === 'collapsed' && "w-[70px]",
             className
@@ -347,11 +347,11 @@ const SidebarMenuItem = React.forwardRef<
 SidebarMenuItem.displayName = "SidebarMenuItem"
 
 const sidebarMenuButtonVariants = cva(
-  "flex w-full items-center gap-3 overflow-hidden rounded-md p-2 text-left text-sm font-medium outline-none ring-ring transition-all focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50",
+  "flex w-full items-center gap-3 overflow-hidden rounded-md p-2 text-left text-sm font-medium text-gray-700 outline-none ring-ring transition-all focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
-        default: "text-muted-foreground hover:bg-accent/50 hover:text-foreground data-[active=true]:bg-primary/10 data-[active=true]:text-primary",
+        default: "hover:bg-emerald-50 hover:text-emerald-800 data-[active=true]:bg-emerald-100 data-[active=true]:text-emerald-900",
       },
     },
     defaultVariants: {

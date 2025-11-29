@@ -1,3 +1,6 @@
+
+'use client';
+
 import Image from 'next/image';
 import {
   Card,
@@ -7,18 +10,30 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { stylists } from '@/lib/data';
+import { stylists as allStylists } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Star, MessageCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
+import { useBranch } from '@/context/site-branch-context';
+import { useMemo } from 'react';
 
-export const metadata = {
-  title: 'Our Stylists | Shear Bliss',
-  description: 'Meet the talented team of stylists at Shear Bliss.',
-};
+// export const metadata = {
+//   title: 'Our Stylists | Shear Bliss',
+//   description: 'Meet the talented team of stylists at Shear Bliss.',
+// };
 
 export default function StylistsPage() {
+  const { selectedBranch } = useBranch();
+
+  const filteredStylists = useMemo(() => {
+     if (selectedBranch === 'all') {
+      return allStylists;
+    }
+    return allStylists.filter(stylist => stylist.branchId === selectedBranch);
+  }, [selectedBranch]);
+
+
   return (
     <div className="container py-12 md:py-20">
       <div className="mx-auto mb-12 max-w-2xl text-center">
@@ -28,7 +43,7 @@ export default function StylistsPage() {
         </p>
       </div>
       <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-        {stylists.map((stylist) => (
+        {filteredStylists.map((stylist) => (
           <Card key={stylist.id} className="flex flex-col overflow-hidden text-center transition-shadow duration-300 hover:shadow-xl">
             <div className="relative h-64 w-full">
               <Image
@@ -66,6 +81,11 @@ export default function StylistsPage() {
             </CardFooter>
           </Card>
         ))}
+         {filteredStylists.length === 0 && (
+          <div className="sm:col-span-2 lg:col-span-4 text-center py-16">
+            <p className="text-muted-foreground">No stylists available at the selected branch.</p>
+          </div>
+        )}
       </div>
     </div>
   );

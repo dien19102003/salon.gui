@@ -23,11 +23,10 @@ import {
   Settings,
   LifeBuoy,
   Users2,
-  Building,
 } from 'lucide-react';
 import { Logo } from '@/components/icons/logo';
 import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,17 +35,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { cn } from '@/lib/utils';
 import { Inter } from 'next/font/google';
-import { BranchProvider, useBranch } from '@/context/admin-branch-context';
-import { branches } from '@/lib/data';
 
 
 const fontSans = Inter({
@@ -63,49 +53,20 @@ const menuItems = [
   { href: '/admin/staff-groups', label: 'Nhóm nhân viên', icon: Users2 },
 ];
 
-
-function BranchSelector() {
-    const { selectedBranch, setSelectedBranch } = useBranch();
-    
-    // API call would happen here, for now we use static data
-    const availableBranches = branches;
-
-    return (
-        <div className="flex items-center gap-2">
-            <Building className="h-5 w-5 text-muted-foreground" />
-            <Select value={selectedBranch} onValueChange={setSelectedBranch}>
-                <SelectTrigger className="w-auto border-none bg-transparent shadow-none focus:ring-0">
-                    <SelectValue placeholder="Chọn chi nhánh..." />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="all">Tất cả chi nhánh</SelectItem>
-                    {availableBranches.map(branch => (
-                        <SelectItem key={branch.id} value={branch.id}>{branch.name}</SelectItem>
-                    ))}
-                </SelectContent>
-            </Select>
-        </div>
-    );
-}
-
 function AdminHeader() {
     
   return (
     <header className="fixed top-0 left-0 right-0 z-30 flex h-16 items-center gap-4 border-b bg-background px-4 shadow-sm md:px-6">
-        <div className="flex items-center gap-2">
-            <div className="flex h-16 items-center justify-center border-r border-dashed pr-4 md:w-[244px] group-data-[state=collapsed]/sidebar-wrapper:md:w-[70px] transition-all duration-300">
-                 <SidebarTrigger />
-            </div>
+        <div className="transition-all duration-300 md:w-[260px] group-data-[state=collapsed]/sidebar-wrapper:md:w-[70px]">
+            {/* This space is for the logo in the sidebar header */}
         </div>
 
         <div className="flex flex-1 items-center justify-end gap-4">
-            <BranchSelector />
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                      <Avatar className="h-9 w-9 border-2 border-border">
-                        <AvatarImage src="https://picsum.photos/seed/admin-user/40/40" alt="Admin" data-ai-hint="person" />
-                        <AvatarFallback>AU</AvatarFallback>
+                        <AvatarFallback>A</AvatarFallback>
                     </Avatar>
                 </Button>
                 </DropdownMenuTrigger>
@@ -144,11 +105,11 @@ function AdminSidebar() {
 
   return (
     <Sidebar>
-        <SidebarHeader className="h-16 flex items-center justify-center p-2 group-data-[state=expanded]/sidebar-wrapper:justify-start group-data-[state=expanded]/sidebar-wrapper:pl-4">
-            <Link href="/admin" className="flex items-center gap-2">
+        <SidebarHeader className="h-16 flex items-center justify-between p-4">
+             <Link href="/admin" className="flex items-center gap-2 group-data-[state=expanded]/sidebar-wrapper:opacity-100 opacity-0 transition-opacity duration-300">
                 <Logo className="h-7 w-auto text-primary" />
-                <h1 className="font-bold text-lg text-primary transition-opacity duration-300 group-data-[state=collapsed]/sidebar-wrapper:opacity-0">Shear Bliss</h1>
             </Link>
+            <SidebarTrigger />
         </SidebarHeader>
         <SidebarContent>
             <SidebarMenu>
@@ -188,9 +149,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
-        <BranchProvider>
-            <AdminLayoutContent>{children}</AdminLayoutContent>
-        </BranchProvider>
+        <AdminLayoutContent>{children}</AdminLayoutContent>
     </SidebarProvider>
   );
 }

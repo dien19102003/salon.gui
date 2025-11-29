@@ -24,25 +24,18 @@ import { DataTable, type ColumnDef, type FetchData } from '@/components/ui/data-
 import type { Stylist } from '@/lib/data';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Link from 'next/link';
-import { useBranch } from '@/context/admin-branch-context';
 
-const fetchStylists: FetchData<Stylist> = async (page, size, context) => {
-    const { branchId } = context || {};
-
+const fetchStylists: FetchData<Stylist> = async (page, size) => {
     // In a real app, you would fetch this from an API
-    // const response = await fetch(`/api/stylists?page=${page}&size=${size}&branchId=${branchId}`);
+    // const response = await fetch(`/api/stylists?page=${page}&size=${size}`);
     // const result: ApiResponse<Stylist> = await response.json();
     // return result;
 
-    const filteredStylists = branchId === 'all'
-        ? allStylists
-        : allStylists.filter(stylist => stylist.branchId === branchId);
-
-    const total = filteredStylists.length;
+    const total = allStylists.length;
     const pageCount = Math.ceil(total / size);
     const start = (page - 1) * size;
     const end = start + size;
-    const data = filteredStylists.slice(start, end);
+    const data = allStylists.slice(start, end);
 
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -64,7 +57,6 @@ const fetchStylists: FetchData<Stylist> = async (page, size, context) => {
 };
 
 export default function StaffPage() {
-    const { selectedBranch } = useBranch();
 
   const columns: ColumnDef<Stylist>[] = [
     {
@@ -152,7 +144,7 @@ export default function StaffPage() {
         </div>
       </CardHeader>
       <CardContent>
-        <DataTable columns={columns} fetchData={fetchStylists} fetchContext={{ branchId: selectedBranch }}/>
+        <DataTable columns={columns} fetchData={fetchStylists} />
       </CardContent>
     </Card>
   );

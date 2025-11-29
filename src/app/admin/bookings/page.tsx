@@ -28,29 +28,18 @@ import { Booking } from '@/lib/data';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
-import { useBranch } from '@/context/admin-branch-context';
 
-const fetchBookings: FetchData<Booking> = async (page, size, context) => {
-  const { branchId } = context || {};
-  
+const fetchBookings: FetchData<Booking> = async (page, size) => {
   // In a real app, you would fetch this from an API
-  // const response = await fetch(`/api/bookings?page=${page}&size=${size}&branchId=${branchId}`);
+  // const response = await fetch(`/api/bookings?page=${page}&size=${size}`);
   // const result: ApiResponse<Booking> = await response.json();
   // return result;
 
-  const filteredBookings = branchId === 'all' 
-    ? allBookings 
-    : allBookings.filter(booking => {
-        // This is a simplified logic. In a real app, you'd check the branch of the service/stylist.
-        // For now, we'll just alternate for demo purposes.
-        return parseInt(booking.id.replace('BK00','')) % 2 === (branchId === 'hcm' ? 1 : 0);
-    });
-
-  const total = filteredBookings.length;
+  const total = allBookings.length;
   const pageCount = Math.ceil(total / size);
   const start = (page - 1) * size;
   const end = start + size;
-  const data = filteredBookings.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(start, end);
+  const data = allBookings.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(start, end);
 
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -72,7 +61,6 @@ const fetchBookings: FetchData<Booking> = async (page, size, context) => {
 };
 
 export default function BookingsPage() {
-  const { selectedBranch } = useBranch();
 
   const columns: ColumnDef<Booking>[] = [
     {
@@ -165,7 +153,7 @@ export default function BookingsPage() {
         </div>
       </CardHeader>
       <CardContent>
-        <DataTable columns={columns} fetchData={fetchBookings} fetchContext={{ branchId: selectedBranch }} />
+        <DataTable columns={columns} fetchData={fetchBookings} />
       </CardContent>
     </Card>
   );

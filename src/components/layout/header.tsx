@@ -1,13 +1,24 @@
+
 'use client';
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu } from 'lucide-react';
+import { Building, Menu } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { cn } from '@/lib/utils';
 import { Logo } from '../icons/logo';
+import { useBranch } from '@/context/site-branch-context';
+import { branches } from '@/lib/data';
+
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -16,6 +27,30 @@ const navLinks = [
   { href: '/contact', label: 'Contact' },
   { href: '/profile', label: 'My Profile' },
 ];
+
+function BranchSelector() {
+    const { selectedBranch, setSelectedBranch } = useBranch();
+    
+    // In a real app, this might come from an API
+    const availableBranches = branches;
+
+    return (
+        <div className="flex items-center gap-2">
+            <Building className="h-4 w-4 text-muted-foreground" />
+            <Select value={selectedBranch} onValueChange={setSelectedBranch}>
+                <SelectTrigger className="w-auto border-none bg-transparent shadow-none focus:ring-0 text-xs text-muted-foreground pr-2 h-auto py-0">
+                    <SelectValue placeholder="Select Branch" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="all">All Branches</SelectItem>
+                    {availableBranches.map(branch => (
+                        <SelectItem key={branch.id} value={branch.id}>{branch.name}</SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
+        </div>
+    );
+}
 
 export function Header() {
   const pathname = usePathname();
@@ -76,10 +111,8 @@ export function Header() {
           </SheetContent>
         </Sheet>
 
-        <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
-          <div className="w-full flex-1 md:w-auto md:flex-none">
-            {/* You can add a search bar here if needed */}
-          </div>
+        <div className="flex flex-1 items-center justify-between space-x-4 md:justify-end">
+          <BranchSelector />
           <nav className="flex items-center">
             <Button asChild className="rounded-full shadow-sm">
               <Link href="/book">Book Now</Link>

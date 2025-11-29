@@ -25,27 +25,18 @@ import { Badge } from '@/components/ui/badge';
 import { DataTable, type ColumnDef, type FetchData } from '@/components/ui/data-table';
 import type { Service } from '@/lib/data';
 import Link from 'next/link';
-import { useBranch } from '@/context/admin-branch-context';
 
-const fetchServices: FetchData<Service> = async (page, size, context) => {
-  const { branchId } = context || {};
-
+const fetchServices: FetchData<Service> = async (page, size) => {
   // In a real app, you would fetch this from an API
-  // const response = await fetch(`/api/services?page=${page}&size=${size}&branchId=${branchId}`);
+  // const response = await fetch(`/api/services?page=${page}&size=${size}`);
   // const result: ApiResponse<Service> = await response.json();
   // return result;
 
-  const filteredServices = branchId === 'all'
-    ? allServices
-    : allServices.filter(service => 
-        service.branchPricing.some(p => p.branchId === branchId && p.status === 'Active') || service.branchPricing.length === 0
-      );
-
-  const total = filteredServices.length;
+  const total = allServices.length;
   const pageCount = Math.ceil(total / size);
   const start = (page - 1) * size;
   const end = start + size;
-  const data = filteredServices.slice(start, end);
+  const data = allServices.slice(start, end);
 
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -67,7 +58,6 @@ const fetchServices: FetchData<Service> = async (page, size, context) => {
 };
 
 export default function ServicesPage() {
-  const { selectedBranch } = useBranch();
 
   const columns: ColumnDef<Service>[] = [
     {
@@ -102,25 +92,14 @@ export default function ServicesPage() {
     },
     {
       key: 'price',
-      title: 'Price',
-      render: (_, record) => {
-        if (selectedBranch !== 'all') {
-          const branchPrice = record.branchPricing.find(p => p.branchId === selectedBranch);
-          if (branchPrice) {
-            return `$${branchPrice.price.toFixed(2)}`;
-          }
-        }
-        return `$${record.price.toFixed(2)} (Default)`;
-      }
+      title: 'Default Price',
+      pathValue: 'price',
+      render: (value) => `$${Number(value).toFixed(2)}`
     },
     {
         key: 'status',
         title: 'Status',
-        render: (_, record) => {
-            if (selectedBranch !== 'all') {
-                const branchInfo = record.branchPricing.find(p => p.branchId === selectedBranch);
-                return <Switch defaultChecked={branchInfo ? branchInfo.status === 'Active' : true} aria-label="Toggle service status" />
-            }
+        render: () => {
             return <Switch defaultChecked={true} aria-label="Toggle service status" />
         }
     },
@@ -171,7 +150,7 @@ export default function ServicesPage() {
         </div>
       </CardHeader>
       <CardContent>
-        <DataTable columns={columns} fetchData={fetchServices} fetchContext={{ branchId: selectedBranch }}/>
+        <DataTable columns={columns} fetchData={fetchServices} />
       </CardContent>
     </Card>
   );
