@@ -2,215 +2,152 @@
 
 import * as React from 'react';
 import {
-  add,
-  eachDayOfInterval,
-  endOfMonth,
-  format,
-  getDay,
-  isEqual,
-  isSameDay,
-  isSameMonth,
-  isToday,
-  parse,
-  parseISO,
-  startOfToday,
-} from 'date-fns';
-import { ChevronLeft, ChevronRight, PlusCircle } from 'lucide-react';
-
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { bookings as staticBookings } from '@/lib/data';
-import { cn } from '@/lib/utils';
-import { Badge } from '@/components/ui/badge';
+import { bookings as allBookings } from '@/lib/data';
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
+  PlusCircle,
+  MoreHorizontal
+} from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import Link from 'next/link';
+import { DataTable, type ColumnDef } from '@/components/ui/data-table';
+import { Booking } from '@/lib/data';
+import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
+import { format } from 'date-fns';
 
-function BookingCalendar() {
-  let today = startOfToday();
-  let [selectedDay, setSelectedDay] = React.useState(today);
-  let [currentMonth, setCurrentMonth] = React.useState(format(today, 'MMM-yyyy'));
-  let firstDayCurrentMonth = parse(currentMonth, 'MMM-yyyy', new Date());
+// Simulate an API call
+const fetchBookings: (page: number, size: number) => Promise<{ meta: any; data: Booking[]; }> = async (page, size) => {
+  const total = allBookings.length;
+  const pageCount = Math.ceil(total / size);
+  const start = (page - 1) * size;
+  const end = start + size;
+  // Sort bookings by date descending
+  const data = allBookings.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(start, end);
 
-  let days = eachDayOfInterval({
-    start: firstDayCurrentMonth,
-    end: endOfMonth(firstDayCurrentMonth),
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        meta: {
+          traceId: `trace-${Date.now()}`,
+          success: true,
+          total,
+          page,
+          size,
+          pageCount,
+          canNext: page < pageCount,
+          canPrev: page > 1,
+        },
+        data,
+      });
+    }, 300); // Simulate network delay
   });
+};
 
-  function previousMonth() {
-    let firstDayNextMonth = add(firstDayCurrentMonth, { months: -1 });
-    setCurrentMonth(format(firstDayNextMonth, 'MMM-yyyy'));
-  }
-
-  function nextMonth() {
-    let firstDayNextMonth = add(firstDayCurrentMonth, { months: 1 });
-    setCurrentMonth(format(firstDayNextMonth, 'MMM-yyyy'));
-  }
-
-  let selectedDayBookings = staticBookings.filter((booking) =>
-    isSameDay(parseISO(booking.date), selectedDay)
-  );
-
-  return (
-    <div className="bg-card p-4 sm:p-6 rounded-lg shadow-sm">
-      <div className="md:grid md:grid-cols-2 md:divide-x md:divide-border">
-        <div className="md:pr-8">
-          <div className="flex items-center">
-            <h2 className="flex-auto font-semibold text-card-foreground">
-              {format(firstDayCurrentMonth, 'MMMM yyyy')}
-            </h2>
-            <button
-              type="button"
-              onClick={previousMonth}
-              className="-my-1.5 flex flex-none items-center justify-center p-1.5 text-muted-foreground hover:text-card-foreground"
-            >
-              <span className="sr-only">Previous month</span>
-              <ChevronLeft className="w-5 h-5" aria-hidden="true" />
-            </button>
-            <button
-              onClick={nextMonth}
-              type="button"
-              className="-my-1.5 -mr-1.5 ml-2 flex flex-none items-center justify-center p-1.5 text-muted-foreground hover:text-card-foreground"
-            >
-              <span className="sr-only">Next month</span>
-              <ChevronRight className="w-5 h-5" aria-hidden="true" />
-            </button>
-          </div>
-          <div className="grid grid-cols-7 mt-10 text-xs leading-6 text-center text-muted-foreground">
-            <div>S</div>
-            <div>M</div>
-            <div>T</div>
-            <div>W</div>
-            <div>T</div>
-            <div>F</div>
-            <div>S</div>
-          </div>
-          <div className="grid grid-cols-7 mt-2 text-sm">
-            {days.map((day, dayIdx) => (
-              <div
-                key={day.toString()}
-                className={cn(
-                  dayIdx === 0 && colStartClasses[getDay(day)],
-                  'py-1.5'
-                )}
-              >
-                <button
-                  type="button"
-                  onClick={() => setSelectedDay(day)}
-                  className={cn(
-                    isEqual(day, selectedDay) && 'text-white',
-                    !isEqual(day, selectedDay) &&
-                      isToday(day) &&
-                      'text-primary',
-                    !isEqual(day, selectedDay) &&
-                      !isToday(day) &&
-                      isSameMonth(day, firstDayCurrentMonth) &&
-                      'text-card-foreground',
-                    !isEqual(day, selectedDay) &&
-                      !isToday(day) &&
-                      !isSameMonth(day, firstDayCurrentMonth) &&
-                      'text-muted-foreground',
-                    isEqual(day, selectedDay) && isToday(day) && 'bg-primary',
-                    isEqual(day, selectedDay) &&
-                      !isToday(day) &&
-                      'bg-primary/80',
-                    !isEqual(day, selectedDay) && 'hover:bg-muted',
-                    (isEqual(day, selectedDay) || isToday(day)) &&
-                      'font-semibold',
-                    'mx-auto flex h-8 w-8 items-center justify-center rounded-full'
-                  )}
-                >
-                  <time dateTime={format(day, 'yyyy-MM-dd')}>
-                    {format(day, 'd')}
-                  </time>
-                </button>
-
-                <div className="w-1 h-1 mx-auto mt-1">
-                  {staticBookings.some((booking) =>
-                    isSameDay(parseISO(booking.date), day)
-                  ) && (
-                    <div className="w-1 h-1 rounded-full bg-sky-500"></div>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
+export default function BookingsPage() {
+  const columns: ColumnDef<Booking>[] = [
+    {
+      key: 'customer',
+      title: 'Customer',
+      render: (_, record) => (
+        <div>
+          <div className="font-medium">{record.customerName}</div>
+          <div className="text-xs text-muted-foreground">{record.customerEmail}</div>
         </div>
-        <section className="mt-12 md:mt-0 md:pl-8">
-            <div className="flex items-center justify-between">
-                <h2 className="font-semibold text-card-foreground">
-                    Schedule for{' '}
-                    <time dateTime={format(selectedDay, 'yyyy-MM-dd')}>
-                    {format(selectedDay, 'MMM dd, yyy')}
-                    </time>
-                </h2>
-                <Dialog>
-                    <DialogTrigger asChild>
-                        <Button size="sm">
-                            <PlusCircle className="mr-2 h-4 w-4" />
-                            Add Booking
-                        </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                        <DialogHeader>
-                        <DialogTitle>Add New Booking</DialogTitle>
-                        </DialogHeader>
-                        {/* Add booking form here */}
-                    </DialogContent>
-                </Dialog>
-          </div>
-          <ol className="mt-4 space-y-1 text-sm leading-6 text-muted-foreground">
-            {selectedDayBookings.length > 0 ? (
-              selectedDayBookings.map((booking) => (
-                <Booking booking={booking} key={booking.id} />
-              ))
-            ) : (
-              <p>No bookings for today.</p>
-            )}
-          </ol>
-        </section>
-      </div>
-    </div>
-  );
-}
+      )
+    },
+    {
+      key: 'service',
+      title: 'Service',
+      pathValue: 'serviceName',
+    },
+    {
+      key: 'stylist',
+      title: 'Stylist',
+      pathValue: 'stylistName',
+    },
+    {
+      key: 'dateTime',
+      title: 'Date & Time',
+      render: (_, record) => (
+        <div>
+          <div>{format(new Date(record.date), 'PPP')}</div>
+          <div className="text-xs text-muted-foreground">{record.time}</div>
+        </div>
+      )
+    },
+    {
+        key: 'status',
+        title: 'Status',
+        render: (_, record) => (
+            <Badge
+                variant="outline"
+                className={cn({
+                    'bg-green-100 text-green-700 border-green-200': record.status === 'Confirmed' || record.status === 'Completed',
+                    'bg-yellow-100 text-yellow-700 border-yellow-200': record.status === 'Pending',
+                    'bg-red-100 text-red-700 border-red-200': record.status === 'Cancelled',
+                }, 'font-medium py-1')}
+                >
+                {record.status}
+            </Badge>
+        )
+    },
+    {
+      key: 'actions',
+      title: 'Actions',
+      className: 'text-right',
+      render: (_, record) => (
+        <div className="flex justify-end gap-2">
+          <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+              <Button aria-haspopup="true" size="icon" variant="ghost">
+              <MoreHorizontal className="h-4 w-4" />
+              <span className="sr-only">Toggle menu</span>
+              </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem>View Details</DropdownMenuItem>
+              <DropdownMenuItem>Edit</DropdownMenuItem>
+              <DropdownMenuItem className="text-destructive">Cancel</DropdownMenuItem>
+          </DropdownMenuContent>
+          </DropdownMenu>
+     </div>
+      )
+    }
+  ];
 
-function Booking({ booking }: { booking: typeof staticBookings[0] }) {
   return (
-    <li className="flex items-center px-4 py-2 space-x-4 group rounded-xl focus-within:bg-muted hover:bg-muted">
-      <div className="flex-auto">
-        <p className="text-card-foreground font-medium">{booking.serviceName}</p>
-        <p className="flex items-center gap-2">
-            <time dateTime={booking.date}>{booking.time}</time>
-            <span>·</span>
-            <span>{booking.customerName}</span>
-        </p>
-         <p className="text-xs text-muted-foreground">{booking.stylistName}</p>
-      </div>
-      <Badge
-        variant="outline"
-        className={cn({
-            'bg-green-100 text-green-700 border-green-200': booking.status === 'Confirmed' || booking.status === 'Completed',
-            'bg-yellow-100 text-yellow-700 border-yellow-200': booking.status === 'Pending',
-            'bg-red-100 text-red-700 border-red-200': booking.status === 'Cancelled',
-        }, 'font-medium py-1')}
-        >
-        {booking.status}
-      </Badge>
-    </li>
+    <Card>
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle>Bookings</CardTitle>
+            <CardDescription>
+              Manage all appointments for your salon.
+            </CardDescription>
+          </div>
+          <Button>
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Add Booking
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <DataTable columns={columns} fetchData={fetchBookings} />
+      </CardContent>
+    </Card>
   );
 }
-
-let colStartClasses = [
-  '',
-  'col-start-2',
-  'col-start-3',
-  'col-start-4',
-  'col-start-5',
-  'col-start-6',
-  'col-start-7',
-];
-
-export default BookingCalendar;

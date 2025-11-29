@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { services as allServices } from '@/lib/data';
+import { stylists as allStylists } from '@/lib/data';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,20 +17,20 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { MoreHorizontal, PlusCircle } from 'lucide-react';
+import { MoreHorizontal, PlusCircle, Star } from 'lucide-react';
 import Image from 'next/image';
-import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { DataTable, type ColumnDef } from '@/components/ui/data-table';
-import type { Service } from '@/lib/data';
+import type { Stylist } from '@/lib/data';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 // Simulate an API call
-const fetchServices: (page: number, size: number) => Promise<{ meta: any; data: Service[]; }> = async (page, size) => {
-  const total = allServices.length;
+const fetchStylists: (page: number, size: number) => Promise<{ meta: any; data: Stylist[]; }> = async (page, size) => {
+  const total = allStylists.length;
   const pageCount = Math.ceil(total / size);
   const start = (page - 1) * size;
   const end = start + size;
-  const data = allServices.slice(start, end);
+  const data = allStylists.slice(start, end);
 
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -51,47 +51,46 @@ const fetchServices: (page: number, size: number) => Promise<{ meta: any; data: 
   });
 };
 
-export default function ServicesPage() {
-  const columns: ColumnDef<Service>[] = [
+export default function StaffPage() {
+  const columns: ColumnDef<Stylist>[] = [
     {
-      key: 'image',
-      title: 'Image',
+      key: 'name',
+      title: 'Stylist',
       render: (_, record) => (
-        <Image
-          alt={record.name}
-          className="aspect-square rounded-md object-cover"
-          height="56"
-          src={record.image.imageUrl}
-          width="56"
-          data-ai-hint={record.image.imageHint}
-        />
+        <div className="flex items-center gap-4">
+            <Avatar className="h-12 w-12">
+                <AvatarImage src={record.image.imageUrl} alt={record.name} data-ai-hint={record.image.imageHint} />
+                <AvatarFallback>{record.name.charAt(0)}</AvatarFallback>
+            </Avatar>
+            <div className="font-medium">{record.name}</div>
+        </div>
       )
     },
     {
-      key: 'name',
-      title: 'Service Name',
-      pathValue: 'name',
-      render: (value) => <span className="font-medium">{value}</span>
+      key: 'skills',
+      title: 'Skills',
+      render: (_, record) => (
+        <div className="flex flex-wrap gap-1">
+          {record.skills.slice(0, 3).map(skill => (
+            <Badge key={skill} variant="secondary">{skill}</Badge>
+          ))}
+        </div>
+      )
     },
     {
-      key: 'category',
-      title: 'Category',
-      render: (_, record) => <Badge variant="secondary">{record.category}</Badge>
-    },
-    {
-      key: 'duration',
-      title: 'Duration',
-      render: (_, record) => `${record.duration} min`
-    },
-    {
-      key: 'price',
-      title: 'Price',
-      render: (_, record) => `$${record.price.toFixed(2)}`
+      key: 'rating',
+      title: 'Rating',
+      render: (_, record) => (
+        <div className="flex items-center gap-1">
+            <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
+            <span>{record.rating.toFixed(1)} ({record.reviews} reviews)</span>
+        </div>
+        )
     },
     {
         key: 'status',
         title: 'Status',
-        render: () => <Switch defaultChecked={true} aria-label="Toggle service status" />
+        render: () => <Badge variant="outline" className="bg-green-100 text-green-800 border-green-200">Active</Badge>
     },
     {
       key: 'actions',
@@ -107,8 +106,9 @@ export default function ServicesPage() {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuItem>View Schedule</DropdownMenuItem>
             <DropdownMenuItem>Edit</DropdownMenuItem>
-            <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
+            <DropdownMenuItem className="text-destructive">Deactivate</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
@@ -120,19 +120,19 @@ export default function ServicesPage() {
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle>Service Management</CardTitle>
+            <CardTitle>Staff Management</CardTitle>
             <CardDescription>
-              Manage your salon's services, pricing, and availability.
+              Manage your talented team of stylists.
             </CardDescription>
           </div>
           <Button>
             <PlusCircle className="mr-2 h-4 w-4" />
-            Add Service
+            Add Stylist
           </Button>
         </div>
       </CardHeader>
       <CardContent>
-        <DataTable columns={columns} fetchData={fetchServices} />
+        <DataTable columns={columns} fetchData={fetchStylists} />
       </CardContent>
     </Card>
   );
