@@ -18,9 +18,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { MoreHorizontal, PlusCircle } from 'lucide-react';
+import { MoreHorizontal, PlusCircle, ArrowUpRight } from 'lucide-react';
 import { DataTable, type ColumnDef } from '@/components/ui/data-table';
 import type { StaffGroup } from '@/lib/data';
+import Link from 'next/link';
 
 // Simulate an API call
 const fetchStaffGroups: (page: number, size: number) => Promise<{ meta: any; data: StaffGroup[]; }> = async (page, size) => {
@@ -69,22 +70,30 @@ export default function StaffGroupsPage() {
     },
     {
       key: 'actions',
-      title: <span className="sr-only">Actions</span>,
+      title: 'Hành động',
       className: 'text-right',
-      render: () => (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button aria-haspopup="true" size="icon" variant="ghost">
-              <MoreHorizontal className="h-4 w-4" />
-              <span className="sr-only">Toggle menu</span>
+      render: (_, record) => (
+        <div className="flex justify-end gap-2">
+            <Button asChild variant="outline" size="sm">
+                <Link href={`/admin/staff-groups/${record.id}`}>
+                    Chi tiết
+                    <ArrowUpRight className="h-4 w-4 ml-2" />
+                </Link>
             </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem>Edit</DropdownMenuItem>
-            <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+            <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button aria-haspopup="true" size="icon" variant="ghost">
+                <MoreHorizontal className="h-4 w-4" />
+                <span className="sr-only">Toggle menu</span>
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                <DropdownMenuItem asChild><Link href={`/admin/staff-groups/${record.id}/edit`}>Chỉnh sửa</Link></DropdownMenuItem>
+                <DropdownMenuItem className="text-destructive">Xóa</DropdownMenuItem>
+            </DropdownMenuContent>
+            </DropdownMenu>
+        </div>
       )
     }
   ];
@@ -96,12 +105,14 @@ export default function StaffGroupsPage() {
           <div>
             <CardTitle>Nhóm nhân viên</CardTitle>
             <CardDescription>
-              Quản lý các nhóm nhân viên trong salon của bạn.
+              Quản lý các nhóm nhân viên và các dịch vụ họ có thể thực hiện.
             </CardDescription>
           </div>
-          <Button>
-            <PlusCircle className="mr-2 h-4 w-4" />
-            Thêm nhóm
+          <Button asChild>
+            <Link href="/admin/staff-groups/new">
+                 <PlusCircle className="mr-2 h-4 w-4" />
+                Thêm nhóm
+            </Link>
           </Button>
         </div>
       </CardHeader>

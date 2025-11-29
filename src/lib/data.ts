@@ -133,12 +133,31 @@ export type StaffGroup = {
     name: string;
     description: string;
     memberCount: number;
+    serviceIds: string[];
 }
 
 export const staffGroups: StaffGroup[] = [
-    { id: 'senior-stylists', name: 'Stylist cấp cao', description: 'Nhóm các stylist có kinh nghiệm lâu năm.', memberCount: 2 },
-    { id: 'junior-stylists', name: 'Stylist trẻ', description: 'Nhóm các stylist trẻ, tài năng và sáng tạo.', memberCount: 1 },
-    { id: 'trainees', name: 'Thực tập sinh', description: 'Nhóm các bạn đang trong quá trình đào tạo.', memberCount: 1 },
+    { 
+        id: 'senior-stylists', 
+        name: 'Stylist cấp cao', 
+        description: 'Nhóm các stylist có kinh nghiệm lâu năm, chuyên xử lý các kỹ thuật phức tạp.', 
+        memberCount: 2,
+        serviceIds: ['1', '2', '5'] 
+    },
+    { 
+        id: 'junior-stylists', 
+        name: 'Stylist trẻ', 
+        description: 'Nhóm các stylist trẻ, tài năng và sáng tạo, chuyên các kiểu tóc hiện đại.', 
+        memberCount: 1,
+        serviceIds: ['1', '3', '6']
+    },
+    { 
+        id: 'trainees', 
+        name: 'Thực tập sinh', 
+        description: 'Nhóm các bạn đang trong quá trình đào tạo, thực hiện các dịch vụ cơ bản.', 
+        memberCount: 1,
+        serviceIds: ['4', '6']
+    },
 ];
 
 
