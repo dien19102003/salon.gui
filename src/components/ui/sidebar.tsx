@@ -176,7 +176,7 @@ const Sidebar = React.forwardRef<
       <aside
         ref={ref}
         className={cn(
-            "fixed top-16 z-20 hidden h-[calc(100vh-64px)] flex-col border-r bg-background transition-all duration-300 md:flex",
+            "fixed top-0 z-20 hidden h-screen flex-col border-r bg-background transition-all duration-300 md:flex",
             "w-[260px]",
             state === 'collapsed' && "w-[70px]",
             className

@@ -62,7 +62,7 @@ export default function ServicesPage() {
   const columns: ColumnDef<Service>[] = [
     {
       key: 'image',
-      title: 'Image',
+      title: 'Ảnh',
       render: (_, record) => (
         <Image
           alt={record.name}
@@ -76,42 +76,42 @@ export default function ServicesPage() {
     },
     {
       key: 'name',
-      title: 'Service Name',
+      title: 'Tên dịch vụ',
       pathValue: 'name',
       render: (value) => <span className="font-medium">{value}</span>
     },
     {
       key: 'category',
-      title: 'Category',
+      title: 'Danh mục',
       render: (_, record) => <Badge variant="secondary">{record.category}</Badge>
     },
     {
       key: 'duration',
-      title: 'Duration',
-      render: (_, record) => `${record.duration} min`
+      title: 'Thời lượng',
+      render: (_, record) => `${record.duration} phút`
     },
     {
       key: 'price',
-      title: 'Default Price',
+      title: 'Giá mặc định',
       pathValue: 'price',
       render: (value) => `$${Number(value).toFixed(2)}`
     },
     {
         key: 'status',
-        title: 'Status',
+        title: 'Trạng thái',
         render: () => {
             return <Switch defaultChecked={true} aria-label="Toggle service status" />
         }
     },
     {
       key: 'actions',
-      title: 'Actions',
+      title: 'Hành động',
       className: 'text-right',
       render: (_, record) => (
          <div className="flex justify-end gap-2">
            <Button asChild variant="outline" size="sm">
               <Link href={`/admin/services/${record.id}`}>
-                  Details
+                  Chi tiết
                   <ArrowUpRight className="h-4 w-4 ml-2" />
               </Link>
            </Button>
@@ -123,9 +123,9 @@ export default function ServicesPage() {
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                <DropdownMenuItem>Edit</DropdownMenuItem>
-                <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
+                <DropdownMenuLabel>Hành động</DropdownMenuLabel>
+                <DropdownMenuItem>Sửa</DropdownMenuItem>
+                <DropdownMenuItem className="text-destructive">Xóa</DropdownMenuItem>
             </DropdownMenuContent>
             </DropdownMenu>
         </div>
@@ -138,14 +138,14 @@ export default function ServicesPage() {
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle>Service Management</CardTitle>
+            <CardTitle>Quản lý dịch vụ</CardTitle>
             <CardDescription>
-              Manage your salon's services, pricing, and availability.
+              Quản lý dịch vụ, giá cả và tình trạng còn trống của salon.
             </CardDescription>
           </div>
           <Button>
             <PlusCircle className="mr-2 h-4 w-4" />
-            Add Service
+            Thêm dịch vụ
           </Button>
         </div>
       </CardHeader>

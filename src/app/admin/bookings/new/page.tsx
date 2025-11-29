@@ -21,9 +21,9 @@ import { format } from 'date-fns';
 import { services, stylists } from '@/lib/data';
 
 const availableTimes = [
-  '09:00 AM', '09:30 AM', '10:00 AM', '10:30 AM',
-  '11:00 AM', '11:30 AM', '01:00 PM', '01:30 PM',
-  '02:00 PM', '02:30 PM', '03:00 PM', '03:30 PM',
+  '09:00 SA', '09:30 SA', '10:00 SA', '10:30 SA',
+  '11:00 SA', '11:30 SA', '01:00 CH', '01:30 CH',
+  '02:00 CH', '02:30 CH', '03:00 CH', '03:30 CH',
 ];
 
 export default function NewBookingPage() {
@@ -36,37 +36,37 @@ export default function NewBookingPage() {
             <Button asChild variant="outline" size="icon">
                 <Link href="/admin/bookings">
                     <ArrowLeft className="h-4 w-4" />
-                    <span className="sr-only">Back to Bookings</span>
+                    <span className="sr-only">Quay lại Đặt chỗ</span>
                 </Link>
             </Button>
             <div className="space-y-1">
-                <h1 className="text-2xl font-bold">Add New Booking</h1>
-                <p className="text-muted-foreground">Create a new appointment for a walk-in or phone customer.</p>
+                <h1 className="text-2xl font-bold">Thêm Đặt chỗ mới</h1>
+                <p className="text-muted-foreground">Tạo một cuộc hẹn mới cho khách hàng đến trực tiếp hoặc qua điện thoại.</p>
             </div>
         </div>
       <Card>
         <CardHeader>
-          <CardTitle>Appointment Details</CardTitle>
+          <CardTitle>Chi tiết cuộc hẹn</CardTitle>
           <CardDescription>
-            Fill in the details below to create a new booking.
+            Điền vào các chi tiết dưới đây để tạo một đặt chỗ mới.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form className="grid gap-6 lg:grid-cols-2">
             <div className="space-y-6">
                  <div className="space-y-2">
-                    <Label htmlFor="customer-name">Customer Name</Label>
-                    <Input id="customer-name" placeholder="e.g. John Doe" />
+                    <Label htmlFor="customer-name">Tên khách hàng</Label>
+                    <Input id="customer-name" placeholder="ví dụ: John Doe" />
                 </div>
                 <div className="space-y-2">
-                    <Label htmlFor="customer-email">Customer Email</Label>
-                    <Input id="customer-email" type="email" placeholder="e.g. john@example.com" />
+                    <Label htmlFor="customer-email">Email khách hàng</Label>
+                    <Input id="customer-email" type="email" placeholder="ví dụ: john@example.com" />
                 </div>
                  <div className="space-y-2">
-                    <Label htmlFor="service">Service</Label>
+                    <Label htmlFor="service">Dịch vụ</Label>
                     <Select>
                         <SelectTrigger>
-                            <SelectValue placeholder="Select a service" />
+                            <SelectValue placeholder="Chọn một dịch vụ" />
                         </SelectTrigger>
                         <SelectContent>
                             {services.map(service => (
@@ -76,10 +76,10 @@ export default function NewBookingPage() {
                     </Select>
                 </div>
                 <div className="space-y-2">
-                    <Label htmlFor="stylist">Stylist</Label>
+                    <Label htmlFor="stylist">Nhà tạo mẫu</Label>
                     <Select>
                         <SelectTrigger>
-                            <SelectValue placeholder="Select a stylist" />
+                            <SelectValue placeholder="Chọn một nhà tạo mẫu" />
                         </SelectTrigger>
                         <SelectContent>
                             {stylists.map(stylist => (
@@ -91,7 +91,7 @@ export default function NewBookingPage() {
             </div>
             <div className="space-y-6">
                 <div className="space-y-2">
-                     <Label htmlFor="date">Date</Label>
+                     <Label htmlFor="date">Ngày</Label>
                     <Popover>
                         <PopoverTrigger asChild>
                         <Button
@@ -102,7 +102,7 @@ export default function NewBookingPage() {
                             )}
                         >
                             <CalendarIcon className="mr-2 h-4 w-4" />
-                            {selectedDate ? format(selectedDate, "PPP") : <span>Pick a date</span>}
+                            {selectedDate ? format(selectedDate, "PPP") : <span>Chọn một ngày</span>}
                         </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0">
@@ -117,7 +117,7 @@ export default function NewBookingPage() {
                 </div>
 
                 <div className="space-y-2">
-                    <Label>Time</Label>
+                    <Label>Thời gian</Label>
                     <div className="grid grid-cols-3 gap-2">
                         {availableTimes.map((time) => (
                             <Button
@@ -131,7 +131,7 @@ export default function NewBookingPage() {
                         ))}
                     </div>
                 </div>
-                 <Button type="submit" className="w-full">Create Booking</Button>
+                 <Button type="submit" className="w-full">Tạo Đặt chỗ</Button>
             </div>
 
           </form>

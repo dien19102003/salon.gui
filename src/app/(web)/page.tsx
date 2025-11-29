@@ -8,10 +8,10 @@ import { Star, Scissors, Brush, Sparkles, Droplets } from 'lucide-react';
 import { services, reviews } from '@/lib/data';
 
 const categoryIcons = {
-  Haircut: <Scissors className="h-8 w-8 text-primary" />,
-  Coloring: <Brush className="h-8 w-8 text-primary" />,
-  Styling: <Sparkles className="h-8 w-8 text-primary" />,
-  Treatments: <Droplets className="h-8 w-8 text-primary" />,
+  'Cắt tóc': <Scissors className="h-8 w-8 text-primary" />,
+  'Nhuộm màu': <Brush className="h-8 w-8 text-primary" />,
+  'Tạo kiểu': <Sparkles className="h-8 w-8 text-primary" />,
+  'Trị liệu': <Droplets className="h-8 w-8 text-primary" />,
 };
 
 const serviceCategories = [...new Map(services.map(s => [s.category, s])).values()];
@@ -38,14 +38,14 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-black/50" />
         <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-white">
           <h1 className="font-headline text-4xl font-bold md:text-6xl">
-            Experience Shear Bliss
+            Trải nghiệm Shear Bliss
           </h1>
           <p className="mt-4 max-w-2xl text-lg md:text-xl">
-            Where your beauty is our passion. Discover the art of beautiful hair
-            with our expert stylists.
+            Nơi vẻ đẹp của bạn là niềm đam mê của chúng tôi. Khám phá nghệ thuật của mái tóc đẹp
+            với các nhà tạo mẫu chuyên nghiệp của chúng tôi.
           </p>
           <Button asChild size="lg" className="mt-8 rounded-full shadow-lg">
-            <Link href="/book">Book Your Appointment</Link>
+            <Link href="/book">Đặt lịch hẹn</Link>
           </Button>
         </div>
       </section>
@@ -55,11 +55,11 @@ export default function HomePage() {
         <div className="container">
           <div className="mx-auto mb-12 max-w-2xl text-center">
             <h2 className="font-headline text-3xl font-bold md:text-4xl">
-              Our Services
+              Dịch vụ của chúng tôi
             </h2>
             <p className="mt-4 text-muted-foreground">
-              From classic cuts to the latest trends, we offer a full range of
-              hair services.
+              Từ những kiểu cắt cổ điển đến những xu hướng mới nhất, chúng tôi cung cấp đầy đủ các dịch vụ
+              về tóc.
             </p>
           </div>
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-8">
@@ -83,19 +83,18 @@ export default function HomePage() {
           <div className="grid items-center gap-12 md:grid-cols-2">
             <div className="space-y-4">
               <h2 className="font-headline text-3xl font-bold md:text-4xl">
-                Welcome to Our Salon
+                Chào mừng đến với Salon của chúng tôi
               </h2>
               <p className="text-muted-foreground">
-                Shear Bliss was founded on the idea that a haircut should be an
-                experience, not a chore. We've created a relaxing and luxurious
-                environment where you can unwind while our talented team works
-                their magic.
+                Shear Bliss được thành lập dựa trên ý tưởng rằng cắt tóc phải là một
+                trải nghiệm, không phải là một công việc vặt. Chúng tôi đã tạo ra một môi trường thư giãn và sang trọng, nơi bạn có thể thư giãn trong khi đội ngũ tài năng của chúng tôi
+                làm nên điều kỳ diệu.
               </p>
               <p className="text-muted-foreground">
-                We are committed to using high-quality products and staying up-to-date with the latest techniques to bring you the very best in hair care.
+                Chúng tôi cam kết sử dụng các sản phẩm chất lượng cao và luôn cập nhật những kỹ thuật mới nhất để mang đến cho bạn những gì tốt nhất trong việc chăm sóc tóc.
               </p>
               <Button asChild variant="outline" className="rounded-full">
-                <Link href="/stylists">Meet Our Stylists</Link>
+                <Link href="/stylists">Gặp gỡ các nhà tạo mẫu của chúng tôi</Link>
               </Button>
             </div>
             <div className="relative h-[500px] w-full">
@@ -119,7 +118,7 @@ export default function HomePage() {
         <div className="container">
           <div className="mx-auto mb-12 max-w-2xl text-center">
             <h2 className="font-headline text-3xl font-bold md:text-4xl">
-              What Our Clients Say
+              Khách hàng nói gì về chúng tôi
             </h2>
           </div>
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
@@ -151,7 +150,7 @@ export default function HomePage() {
                     <div className="ml-4">
                       <p className="font-semibold">{review.name}</p>
                       <p className="text-sm text-muted-foreground">
-                        {review.service} Client
+                        Khách hàng {review.service}
                       </p>
                     </div>
                   </div>

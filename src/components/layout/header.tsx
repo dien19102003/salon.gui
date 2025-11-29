@@ -21,17 +21,17 @@ import { branches } from '@/lib/data';
 
 
 const navLinks = [
-  { href: '/', label: 'Home' },
-  { href: '/services', label: 'Services' },
-  { href: '/stylists', label: 'Stylists' },
-  { href: '/contact', label: 'Contact' },
-  { href: '/profile', label: 'My Profile' },
+  { href: '/', label: 'Trang chủ' },
+  { href: '/services', label: 'Dịch vụ' },
+  { href: '/stylists', label: 'Nhà tạo mẫu' },
+  { href: '/contact', label: 'Liên hệ' },
+  { href: '/profile', label: 'Hồ sơ của tôi' },
 ];
 
 function BranchSelector() {
     const { selectedBranch, setSelectedBranch } = useBranch();
     
-    // In a real app, this might come from an API
+    // Trong ứng dụng thực tế, dữ liệu này có thể đến từ API
     const availableBranches = branches;
 
     return (
@@ -39,10 +39,10 @@ function BranchSelector() {
             <Building className="h-4 w-4 text-muted-foreground" />
             <Select value={selectedBranch} onValueChange={setSelectedBranch}>
                 <SelectTrigger className="w-auto border-none bg-transparent shadow-none focus:ring-0 text-xs text-muted-foreground pr-2 h-auto py-0">
-                    <SelectValue placeholder="Select Branch" />
+                    <SelectValue placeholder="Chọn chi nhánh" />
                 </SelectTrigger>
                 <SelectContent>
-                    <SelectItem value="all">All Branches</SelectItem>
+                    <SelectItem value="all">Tất cả chi nhánh</SelectItem>
                     {availableBranches.map(branch => (
                         <SelectItem key={branch.id} value={branch.id}>{branch.name}</SelectItem>
                     ))}
@@ -85,7 +85,7 @@ export function Header() {
               variant="ghost"
               size="icon"
               className="md:hidden"
-              aria-label="Open menu"
+              aria-label="Mở menu"
             >
               <Menu className="h-5 w-5" />
             </Button>
@@ -115,7 +115,7 @@ export function Header() {
           <BranchSelector />
           <nav className="flex items-center">
             <Button asChild className="rounded-full shadow-sm">
-              <Link href="/book">Book Now</Link>
+              <Link href="/book">Đặt ngay</Link>
             </Button>
           </nav>
         </div>

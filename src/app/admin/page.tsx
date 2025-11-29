@@ -29,8 +29,8 @@ import { RevenueChart, ServicesChart } from '@/components/admin/dashboard-charts
 import { ChartConfig } from "@/components/ui/chart"
 
 export const metadata = {
-  title: 'Dashboard | Shear Bliss Admin',
-  description: 'Overview of your salon operations.',
+  title: 'Bảng điều khiển | Shear Bliss Admin',
+  description: 'Tổng quan về hoạt động salon của bạn.',
 };
 
 const serviceChartData = services.slice(0, 4).map(s => ({ service: s.name, bookings: Math.floor(Math.random() * 50) + 10, fill: `var(--color-chart-${services.findIndex(cs => cs.id === s.id) + 1})` }));
@@ -45,7 +45,7 @@ const serviceChartConfig = services.slice(0, 4).reduce((acc, s, i) => {
 
 
 export default function AdminDashboardPage() {
-  const todaysBookings = bookings.filter(b => b.date === '2024-07-28'); // Using a fixed date for demo
+  const todaysBookings = bookings.filter(b => b.date === '2024-07-28'); // Sử dụng ngày cố định để demo
   const totalRevenue = bookings.filter(b => b.status === 'Completed').reduce((sum, b) => sum + b.price, 0);
   const newCustomers = 573;
   const totalBookings = bookings.length;
@@ -55,42 +55,42 @@ export default function AdminDashboardPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+            <CardTitle className="text-sm font-medium">Tổng doanh thu</CardTitle>
             <DollarSign className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">${totalRevenue.toLocaleString()}</div>
-            <p className="text-xs text-muted-foreground">+20.1% from last month</p>
+            <p className="text-xs text-muted-foreground">+20.1% so với tháng trước</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Bookings</CardTitle>
+            <CardTitle className="text-sm font-medium">Tổng số lượt đặt</CardTitle>
             <CalendarCheck className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">+{totalBookings}</div>
-            <p className="text-xs text-muted-foreground">+180.1% from last month</p>
+            <p className="text-xs text-muted-foreground">+180.1% so với tháng trước</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Services</CardTitle>
+            <CardTitle className="text-sm font-medium">Tổng số dịch vụ</CardTitle>
             <Scissors className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{services.length}</div>
-            <p className="text-xs text-muted-foreground">2 new this month</p>
+            <p className="text-xs text-muted-foreground">2 dịch vụ mới trong tháng này</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">New Customers</CardTitle>
+            <CardTitle className="text-sm font-medium">Khách hàng mới</CardTitle>
             <Users className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">+{newCustomers}</div>
-            <p className="text-xs text-muted-foreground">+201 since last month</p>
+            <p className="text-xs text-muted-foreground">+201 kể từ tháng trước</p>
           </CardContent>
         </Card>
       </div>
@@ -98,8 +98,8 @@ export default function AdminDashboardPage() {
       <div className="grid gap-4 lg:grid-cols-7">
         <Card className="lg:col-span-4">
           <CardHeader>
-            <CardTitle>Revenue Overview</CardTitle>
-            <CardDescription>Monthly revenue for the last 6 months.</CardDescription>
+            <CardTitle>Tổng quan doanh thu</CardTitle>
+            <CardDescription>Doanh thu hàng tháng trong 6 tháng qua.</CardDescription>
           </CardHeader>
           <CardContent className="pl-2">
             <RevenueChart />
@@ -107,8 +107,8 @@ export default function AdminDashboardPage() {
         </Card>
         <Card className="lg:col-span-3 flex flex-col">
           <CardHeader>
-            <CardTitle>Popular Services</CardTitle>
-            <CardDescription>Distribution of bookings by service type.</CardDescription>
+            <CardTitle>Dịch vụ phổ biến</CardTitle>
+            <CardDescription>Phân bổ lượt đặt theo loại dịch vụ.</CardDescription>
           </CardHeader>
           <CardContent className="flex-1 flex items-center justify-center pb-0">
             <ServicesChart serviceChartData={serviceChartData} serviceChartConfig={serviceChartConfig} />
@@ -119,14 +119,14 @@ export default function AdminDashboardPage() {
       <Card>
         <CardHeader className="flex flex-row items-center">
           <div className="grid gap-2">
-            <CardTitle>Recent Bookings</CardTitle>
+            <CardTitle>Lượt đặt gần đây</CardTitle>
             <CardDescription>
-              The latest appointments scheduled at the salon.
+              Các cuộc hẹn mới nhất được lên lịch tại salon.
             </CardDescription>
           </div>
           <Button asChild size="sm" className="ml-auto gap-1">
             <Link href="/admin/bookings">
-              View All
+              Xem tất cả
               <ArrowUpRight className="h-4 w-4" />
             </Link>
           </Button>
@@ -135,11 +135,11 @@ export default function AdminDashboardPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Customer</TableHead>
-                <TableHead>Service</TableHead>
-                <TableHead>Stylist</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Price</TableHead>
+                <TableHead>Khách hàng</TableHead>
+                <TableHead>Dịch vụ</TableHead>
+                <TableHead>Nhà tạo mẫu</TableHead>
+                <TableHead>Trạng thái</TableHead>
+                <TableHead className="text-right">Giá</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

@@ -30,7 +30,7 @@ import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 
 const fetchBookings: FetchData<Booking> = async (page, size) => {
-  // In a real app, you would fetch this from an API
+  // Trong một ứng dụng thực tế, bạn sẽ tìm nạp điều này từ một API
   // const response = await fetch(`/api/bookings?page=${page}&size=${size}`);
   // const result: ApiResponse<Booking> = await response.json();
   // return result;
@@ -56,7 +56,7 @@ const fetchBookings: FetchData<Booking> = async (page, size) => {
         },
         data,
       });
-    }, 300); // Simulate network delay
+    }, 300); // Mô phỏng độ trễ mạng
   });
 };
 
@@ -65,7 +65,7 @@ export default function BookingsPage() {
   const columns: ColumnDef<Booking>[] = [
     {
       key: 'customer',
-      title: 'Customer',
+      title: 'Khách hàng',
       render: (_, record) => (
         <div>
           <div className="font-medium">{record.customerName}</div>
@@ -75,17 +75,17 @@ export default function BookingsPage() {
     },
     {
       key: 'service',
-      title: 'Service',
+      title: 'Dịch vụ',
       pathValue: 'serviceName',
     },
     {
       key: 'stylist',
-      title: 'Stylist',
+      title: 'Nhà tạo mẫu',
       pathValue: 'stylistName',
     },
     {
       key: 'dateTime',
-      title: 'Date & Time',
+      title: 'Ngày & Giờ',
       render: (_, record) => (
         <div>
           <div>{format(new Date(record.date), 'PPP')}</div>
@@ -95,7 +95,7 @@ export default function BookingsPage() {
     },
     {
         key: 'status',
-        title: 'Status',
+        title: 'Trạng thái',
         render: (_, record) => (
             <Badge
                 variant="outline"
@@ -111,7 +111,7 @@ export default function BookingsPage() {
     },
     {
       key: 'actions',
-      title: 'Actions',
+      title: 'Hành động',
       className: 'text-right',
       render: (_, record) => (
         <div className="flex justify-end gap-2">
@@ -119,14 +119,14 @@ export default function BookingsPage() {
           <DropdownMenuTrigger asChild>
               <Button aria-haspopup="true" size="icon" variant="ghost">
               <MoreHorizontal className="h-4 w-4" />
-              <span className="sr-only">Toggle menu</span>
+              <span className="sr-only">Chuyển đổi menu</span>
               </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem>View Details</DropdownMenuItem>
-              <DropdownMenuItem>Edit</DropdownMenuItem>
-              <DropdownMenuItem className="text-destructive">Cancel</DropdownMenuItem>
+              <DropdownMenuLabel>Hành động</DropdownMenuLabel>
+              <DropdownMenuItem>Xem chi tiết</DropdownMenuItem>
+              <DropdownMenuItem>Sửa</DropdownMenuItem>
+              <DropdownMenuItem className="text-destructive">Hủy bỏ</DropdownMenuItem>
           </DropdownMenuContent>
           </DropdownMenu>
      </div>
@@ -139,15 +139,15 @@ export default function BookingsPage() {
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle>Bookings</CardTitle>
+            <CardTitle>Lịch hẹn</CardTitle>
             <CardDescription>
-              Manage all appointments for your salon.
+              Quản lý tất cả các cuộc hẹn cho salon của bạn.
             </CardDescription>
           </div>
           <Button asChild>
             <Link href="/admin/bookings/new">
                 <PlusCircle className="mr-2 h-4 w-4" />
-                Add Booking
+                Thêm lịch hẹn
             </Link>
           </Button>
         </div>

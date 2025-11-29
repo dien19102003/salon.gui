@@ -82,7 +82,7 @@ export function DataTable<T extends { id: string | number }>({
         setData(response.data);
         setMeta(response.meta);
       } catch (error) {
-        console.error('Failed to fetch data:', error);
+        console.error('Không thể tìm nạp dữ liệu:', error);
         // Optionally, handle the error in the UI
       } finally {
         setLoading(false);
@@ -124,8 +124,7 @@ export function DataTable<T extends { id: string | number }>({
                   {columns.map((col) => (
                     <TableCell key={col.key}>
                       <Skeleton className="h-6 w-full" />
-                    </TableCell>
-                  ))}
+                    </TableCell>                  ))}
                 </TableRow>
               ))
             ) : data.length > 0 ? (
@@ -144,7 +143,7 @@ export function DataTable<T extends { id: string | number }>({
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No results.
+                  Không có kết quả.
                 </TableCell>
               </TableRow>
             )}
@@ -154,8 +153,8 @@ export function DataTable<T extends { id: string | number }>({
       <div className="flex items-center justify-between">
         <div className="text-sm text-muted-foreground">
           {meta && meta.total > 0
-            ? `Showing ${((meta.page - 1) * meta.size) + 1} to ${Math.min(meta.page * meta.size, meta.total)} of ${meta.total} entries`
-            : 'No entries to show'
+            ? `Hiển thị ${((meta.page - 1) * meta.size) + 1} đến ${Math.min(meta.page * meta.size, meta.total)} của ${meta.total} mục`
+            : 'Không có mục nào để hiển thị'
           }
         </div>
         <div className="flex items-center space-x-2">
@@ -165,7 +164,7 @@ export function DataTable<T extends { id: string | number }>({
             onClick={handlePrevPage}
             disabled={!meta?.canPrev || loading}
           >
-            Previous
+            Trước
           </Button>
           <Button
             variant="outline"
@@ -173,7 +172,7 @@ export function DataTable<T extends { id: string | number }>({
             onClick={handleNextPage}
             disabled={!meta?.canNext || loading}
           >
-            Next
+            Sau
           </Button>
         </div>
       </div>

@@ -11,7 +11,7 @@ export function Footer() {
           <div className="flex flex-col items-center gap-2 md:items-start">
             <Logo className="h-6 w-auto text-primary" />
             <p className="text-sm text-muted-foreground">
-              Your beauty, our passion.
+              Vẻ đẹp của bạn, niềm đam mê của chúng tôi.
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -33,7 +33,7 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-8 border-t pt-4 text-center text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} Shear Bliss. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Shear Bliss. Đã đăng ký Bản quyền.</p>
         </div>
       </div>
     </footer>

@@ -45,8 +45,8 @@ const fontSans = Inter({
 });
 
 const menuItems = [
-  { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/admin/bookings', label: 'Bookings', icon: Calendar },
+  { href: '/admin', label: 'Bảng điều khiển', icon: LayoutDashboard },
+  { href: '/admin/bookings', label: 'Lịch hẹn', icon: Calendar },
   { href: '/admin/customers', label: 'Khách hàng', icon: Users },
   { href: '/admin/services', label: 'Dịch vụ', icon: Scissors },
   { href: '/admin/staff', label: 'Nhân viên', icon: UserCog },
@@ -57,8 +57,8 @@ function AdminHeader() {
     
   return (
     <header className="fixed top-0 left-0 right-0 z-30 flex h-16 items-center gap-4 border-b bg-background px-4 shadow-sm md:px-6">
-        <div className="transition-all duration-300 md:w-[260px] group-data-[state=collapsed]/sidebar-wrapper:md:w-[70px]">
-            {/* This space is for the logo in the sidebar header */}
+        <div className="transition-all duration-300 md:w-[260px] group-data-[state=collapsed]/sidebar-wrapper:md:w-[70px] flex items-center justify-center">
+             <SidebarTrigger className="ml-auto" />
         </div>
 
         <div className="flex flex-1 items-center justify-end gap-4">
@@ -73,7 +73,7 @@ function AdminHeader() {
                 <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuLabel>
                     <div className="flex flex-col">
-                    <span>Admin User</span>
+                    <span>Quản trị viên</span>
                     <span className="text-xs font-normal text-muted-foreground">admin@shearbliss.com</span>
                     </div>
                 </DropdownMenuLabel>
@@ -105,11 +105,10 @@ function AdminSidebar() {
 
   return (
     <Sidebar>
-        <SidebarHeader className="h-16 flex items-center justify-between p-4">
+        <SidebarHeader className="h-16 flex items-center justify-center p-4">
              <Link href="/admin" className="flex items-center gap-2 group-data-[state=expanded]/sidebar-wrapper:opacity-100 opacity-0 transition-opacity duration-300">
                 <Logo className="h-7 w-auto text-primary" />
             </Link>
-            <SidebarTrigger />
         </SidebarHeader>
         <SidebarContent>
             <SidebarMenu>

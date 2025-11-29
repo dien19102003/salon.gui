@@ -7,8 +7,8 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Logo } from "@/components/icons/logo"
 
 export const metadata = {
-    title: 'Create Account | Shear Bliss',
-    description: 'Sign up for a new Shear Bliss account.',
+    title: 'Tạo tài khoản | Shear Bliss',
+    description: 'Đăng ký tài khoản Shear Bliss mới.',
 };
 
 
@@ -17,18 +17,18 @@ export default function RegisterPage() {
     <>
       <div className="grid gap-2 text-center">
         <Logo className="h-8 w-auto text-primary mb-4" />
-        <h1 className="text-3xl font-bold">Create an Account</h1>
+        <h1 className="text-3xl font-bold">Tạo một tài khoản</h1>
         <p className="text-balance text-muted-foreground">
-          Enter your information to create your Shear Bliss account
+          Nhập thông tin của bạn để tạo tài khoản Shear Bliss
         </p>
       </div>
       <div className="grid gap-4">
         <div className="grid gap-2">
-          <Label htmlFor="full-name">Full Name</Label>
+          <Label htmlFor="full-name">Họ và tên</Label>
           <Input id="full-name" placeholder="Max Robinson" required />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="phone">Phone Number</Label>
+          <Label htmlFor="phone">Số điện thoại</Label>
           <Input id="phone" type="tel" placeholder="(123) 456-7890" required />
         </div>
         <div className="grid gap-2">
@@ -41,7 +41,7 @@ export default function RegisterPage() {
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="password">Password</Label>
+          <Label htmlFor="password">Mật khẩu</Label>
           <Input id="password" type="password" />
         </div>
          <div className="flex items-start space-x-2">
@@ -51,21 +51,21 @@ export default function RegisterPage() {
                     htmlFor="terms"
                     className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                     >
-                    I agree to the <Link href="#" className="underline">Terms and Conditions</Link>
+                    Tôi đồng ý với <Link href="#" className="underline">Điều khoản và Điều kiện</Link>
                 </Label>
             </div>
         </div>
         <Button type="submit" className="w-full">
-          Create an account
+          Tạo tài khoản
         </Button>
          <Button variant="outline" className="w-full">
-            Sign up with Google
+            Đăng ký với Google
         </Button>
       </div>
       <div className="mt-4 text-center text-sm">
-        Already have an account?{" "}
+        Bạn đã có tài khoản?{" "}
         <Link href="/login" className="underline">
-          Sign in
+          Đăng nhập
         </Link>
       </div>
     </>

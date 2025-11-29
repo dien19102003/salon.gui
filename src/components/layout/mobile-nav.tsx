@@ -7,10 +7,10 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
 const navItems = [
-  { href: '/', icon: Home, label: 'Home' },
-  { href: '/services', icon: Scissors, label: 'Services' },
-  { href: '/book', icon: Calendar, label: 'Booking' },
-  { href: '/profile', icon: User, label: 'Profile' },
+  { href: '/', icon: Home, label: 'Trang chủ' },
+  { href: '/services', icon: Scissors, label: 'Dịch vụ' },
+  { href: '/book', icon: Calendar, label: 'Đặt lịch' },
+  { href: '/profile', icon: User, label: 'Hồ sơ' },
 ];
 
 export function MobileNav() {

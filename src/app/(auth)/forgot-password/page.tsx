@@ -6,8 +6,8 @@ import { Label } from "@/components/ui/label"
 import { Logo } from "@/components/icons/logo"
 
 export const metadata = {
-    title: 'Forgot Password | Shear Bliss',
-    description: 'Reset your password for Shear Bliss.',
+    title: 'Quên mật khẩu | Shear Bliss',
+    description: 'Đặt lại mật khẩu của bạn cho Shear Bliss.',
 };
 
 
@@ -16,9 +16,9 @@ export default function ForgotPasswordPage() {
     <>
       <div className="grid gap-2 text-center">
         <Logo className="h-8 w-auto text-primary mb-4" />
-        <h1 className="text-3xl font-bold">Forgot Password?</h1>
+        <h1 className="text-3xl font-bold">Quên mật khẩu?</h1>
         <p className="text-balance text-muted-foreground">
-          No worries! Enter your email below and we'll send you a reset link.
+          Đừng lo lắng! Nhập email của bạn dưới đây và chúng tôi sẽ gửi cho bạn một liên kết đặt lại.
         </p>
       </div>
       <div className="grid gap-4">
@@ -32,13 +32,13 @@ export default function ForgotPasswordPage() {
           />
         </div>
         <Button type="submit" className="w-full">
-          Send Reset Link
+          Gửi liên kết đặt lại
         </Button>
       </div>
       <div className="mt-4 text-center text-sm">
-        Remembered your password?{" "}
+        Đã nhớ mật khẩu?{" "}
         <Link href="/login" className="underline">
-          Sign in
+          Đăng nhập
         </Link>
       </div>
     </>

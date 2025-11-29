@@ -14,8 +14,8 @@ import { Label } from "@/components/ui/label"
 import { Logo } from "@/components/icons/logo"
 
 export const metadata = {
-    title: 'Login | Shear Bliss',
-    description: 'Sign in to your Shear Bliss account.',
+    title: 'Đăng nhập | Shear Bliss',
+    description: 'Đăng nhập vào tài khoản Shear Bliss của bạn.',
 };
 
 export default function LoginPage() {
@@ -23,9 +23,9 @@ export default function LoginPage() {
      <>
         <div className="grid gap-2 text-center">
             <Logo className="h-8 w-auto text-primary mb-4" />
-            <h1 className="text-3xl font-bold">Welcome Back</h1>
+            <h1 className="text-3xl font-bold">Chào mừng trở lại</h1>
             <p className="text-balance text-muted-foreground">
-                Enter your credentials to access your account
+                Nhập thông tin đăng nhập để truy cập vào tài khoản của bạn
             </p>
         </div>
         <div className="grid gap-4">
@@ -40,12 +40,12 @@ export default function LoginPage() {
             </div>
             <div className="grid gap-2">
                 <div className="flex items-center">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">Mật khẩu</Label>
                 <Link
                     href="/forgot-password"
                     className="ml-auto inline-block text-sm underline"
                 >
-                    Forgot your password?
+                    Quên mật khẩu?
                 </Link>
                 </div>
                 <Input id="password" type="password" required />
@@ -56,20 +56,20 @@ export default function LoginPage() {
                     htmlFor="remember-me"
                     className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                     >
-                    Remember me
+                    Ghi nhớ tôi
                 </Label>
             </div>
             <Button type="submit" className="w-full">
-                Login
+                Đăng nhập
             </Button>
             <Button variant="outline" className="w-full">
-                Login with Google
+                Đăng nhập với Google
             </Button>
         </div>
         <div className="mt-4 text-center text-sm">
-            Don&apos;t have an account?{" "}
+            Chưa có tài khoản?{" "}
             <Link href="/register" className="underline">
-                Sign up
+                Đăng ký
             </Link>
         </div>
     </>

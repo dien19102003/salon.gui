@@ -2,8 +2,8 @@ import { BookingFlow } from '@/components/booking/booking-flow';
 import { services, stylists } from '@/lib/data';
 
 export const metadata = {
-  title: 'Book an Appointment | Shear Bliss',
-  description: 'Schedule your next visit with our talented stylists.',
+  title: 'Đặt lịch hẹn | Shear Bliss',
+  description: 'Lên lịch cho lần ghé thăm tiếp theo của bạn với các nhà tạo mẫu tài năng của chúng tôi.',
 };
 
 export default function BookPage({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) {
@@ -14,9 +14,9 @@ export default function BookPage({ searchParams }: { searchParams: { [key: strin
     <div className="container py-12 md:py-20">
       <div className="mx-auto max-w-4xl">
         <div className="text-center">
-          <h1 className="font-headline text-4xl font-bold md:text-5xl">Book an Appointment</h1>
+          <h1 className="font-headline text-4xl font-bold md:text-5xl">Đặt lịch hẹn</h1>
           <p className="mt-4 text-lg text-muted-foreground">
-            Follow the steps below to schedule your visit.
+            Thực hiện theo các bước dưới đây để lên lịch cho chuyến thăm của bạn.
           </p>
         </div>
         <div className="mt-12">

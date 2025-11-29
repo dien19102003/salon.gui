@@ -24,17 +24,17 @@ interface BookingFlowProps {
 }
 
 const steps = [
-  { id: 1, title: 'Choose Service' },
-  { id: 2, title: 'Choose Stylist' },
-  { id: 3, title: 'Choose Date & Time' },
-  { id: 4, title: 'Your Details' },
-  { id: 5, title: 'Confirmation' },
+  { id: 1, title: 'Chọn Dịch vụ' },
+  { id: 2, title: 'Chọn Nhà tạo mẫu' },
+  { id: 3, title: 'Chọn Ngày & Giờ' },
+  { id: 4, title: 'Thông tin của bạn' },
+  { id: 5, title: 'Xác nhận' },
 ];
 
 const availableTimes = [
-  '09:00 AM', '09:30 AM', '10:00 AM', '10:30 AM',
-  '11:00 AM', '11:30 AM', '01:00 PM', '01:30 PM',
-  '02:00 PM', '02:30 PM', '03:00 PM', '03:30 PM',
+  '09:00 SA', '09:30 SA', '10:00 SA', '10:30 SA',
+  '11:00 SA', '11:30 SA', '01:00 CH', '01:30 CH',
+  '02:00 CH', '02:30 CH', '03:00 CH', '03:30 CH',
 ];
 
 
@@ -93,7 +93,7 @@ export function BookingFlow({ services, stylists, initialServiceId, initialStyli
       <CardHeader>
         <div className="flex items-center justify-between">
             <CardTitle className="font-headline text-2xl">
-              Step {currentStep}: {steps[currentStep - 1].title}
+              Bước {currentStep}: {steps[currentStep - 1].title}
             </CardTitle>
             <div className="flex space-x-1">
                 {steps.map(step => (
@@ -116,13 +116,13 @@ export function BookingFlow({ services, stylists, initialServiceId, initialStyli
           >
             {currentStep === 1 && (
               <div className="space-y-4">
-                <p className="text-muted-foreground">Select the service you would like to book.</p>
+                <p className="text-muted-foreground">Chọn dịch vụ bạn muốn đặt.</p>
                 <Select
                   onValueChange={(id) => setSelectedService(services.find(s => s.id === id))}
                   defaultValue={selectedService?.id}
                 >
                   <SelectTrigger className="text-base py-6">
-                    <SelectValue placeholder="Select a service..." />
+                    <SelectValue placeholder="Chọn một dịch vụ..." />
                   </SelectTrigger>
                   <SelectContent>
                     {services.map(service => (
@@ -140,13 +140,13 @@ export function BookingFlow({ services, stylists, initialServiceId, initialStyli
             
             {currentStep === 2 && (
               <div className="space-y-4">
-                 <p className="text-muted-foreground">Choose your preferred stylist.</p>
+                 <p className="text-muted-foreground">Chọn nhà tạo mẫu yêu thích của bạn.</p>
                  <Select
                   onValueChange={(id) => setSelectedStylist(stylists.find(s => s.id === id))}
                   defaultValue={selectedStylist?.id}
                 >
                   <SelectTrigger className="text-base py-6">
-                    <SelectValue placeholder="Select a stylist..." />
+                    <SelectValue placeholder="Chọn một nhà tạo mẫu..." />
                   </SelectTrigger>
                   <SelectContent>
                     {stylists.map(stylist => (
@@ -161,7 +161,7 @@ export function BookingFlow({ services, stylists, initialServiceId, initialStyli
 
             {currentStep === 3 && selectedService && selectedStylist && (
                <div className="space-y-4">
-                <p className="text-muted-foreground">Pick a date and time for your appointment.</p>
+                <p className="text-muted-foreground">Chọn ngày và giờ cho cuộc hẹn của bạn.</p>
                <Popover>
                  <PopoverTrigger asChild>
                    <Button
@@ -172,7 +172,7 @@ export function BookingFlow({ services, stylists, initialServiceId, initialStyli
                      )}
                    >
                      <CalendarIcon className="mr-2 h-4 w-4" />
-                     {selectedDate ? format(selectedDate, "PPP") : <span>Pick a date</span>}
+                     {selectedDate ? format(selectedDate, "PPP") : <span>Chọn một ngày</span>}
                    </Button>
                  </PopoverTrigger>
                  <PopoverContent className="w-auto p-0">
@@ -188,7 +188,7 @@ export function BookingFlow({ services, stylists, initialServiceId, initialStyli
 
                 {selectedDate && (
                   <div className="space-y-4">
-                    <p className="text-muted-foreground text-sm">Select an available time:</p>
+                    <p className="text-muted-foreground text-sm">Chọn một thời gian có sẵn:</p>
                     <div className="grid grid-cols-3 gap-2 md:grid-cols-4">
                         {availableTimes.map((time) => (
                         <Button
@@ -208,9 +208,9 @@ export function BookingFlow({ services, stylists, initialServiceId, initialStyli
 
             {currentStep === 4 && (
                 <div className="space-y-4">
-                    <p className="text-muted-foreground">Please provide your contact details.</p>
+                    <p className="text-muted-foreground">Vui lòng cung cấp thông tin liên hệ của bạn.</p>
                     <div>
-                        <Label htmlFor="name">Full Name</Label>
+                        <Label htmlFor="name">Họ và tên</Label>
                         <Input id="name" value={name} onChange={e => setName(e.target.value)} placeholder="John Doe" />
                     </div>
                     <div>
@@ -218,7 +218,7 @@ export function BookingFlow({ services, stylists, initialServiceId, initialStyli
                         <Input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="john.doe@example.com" />
                     </div>
                      <div>
-                        <Label htmlFor="phone">Phone Number</Label>
+                        <Label htmlFor="phone">Số điện thoại</Label>
                         <Input id="phone" type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="(123) 456-7890" />
                     </div>
                 </div>
@@ -227,15 +227,15 @@ export function BookingFlow({ services, stylists, initialServiceId, initialStyli
             {currentStep === 5 && selectedService && selectedStylist && selectedDate && selectedTime && (
                 <div className="text-center space-y-4 flex flex-col items-center">
                     <CheckCircle className="h-16 w-16 text-green-500" />
-                    <h2 className="text-2xl font-bold">Appointment Confirmed!</h2>
-                    <p className="text-muted-foreground">A confirmation has been sent to your email.</p>
+                    <h2 className="text-2xl font-bold">Lịch hẹn đã được xác nhận!</h2>
+                    <p className="text-muted-foreground">Một xác nhận đã được gửi đến email của bạn.</p>
                     <Card className="text-left w-full max-w-sm">
                         <CardContent className="p-4 space-y-2">
-                            <p><strong>Service:</strong> {selectedService.name}</p>
-                            <p><strong>Stylist:</strong> {selectedStylist.name}</p>
-                            <p><strong>Date:</strong> {format(selectedDate, "PPP")}</p>
-                            <p><strong>Time:</strong> {selectedTime}</p>
-                            <p><strong>Price:</strong> ${selectedService.price}</p>
+                            <p><strong>Dịch vụ:</strong> {selectedService.name}</p>
+                            <p><strong>Nhà tạo mẫu:</strong> {selectedStylist.name}</p>
+                            <p><strong>Ngày:</strong> {format(selectedDate, "PPP")}</p>
+                            <p><strong>Thời gian:</strong> {selectedTime}</p>
+                            <p><strong>Giá:</strong> ${selectedService.price}</p>
                         </CardContent>
                     </Card>
                 </div>
@@ -247,20 +247,20 @@ export function BookingFlow({ services, stylists, initialServiceId, initialStyli
       <div className="flex items-center justify-between border-t p-4">
         <Button variant="outline" onClick={prevStep} disabled={currentStep === 1} className="rounded-full">
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back
+            Quay lại
         </Button>
         {currentStep < 4 ? (
             <Button onClick={nextStep} disabled={!isStepValid(currentStep)} className="rounded-full">
-                Next
+                Tiếp theo
                 <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
         ) : currentStep === 4 ? (
             <Button onClick={nextStep} disabled={!isStepValid(currentStep)} className="rounded-full">
-                Confirm Booking
+                Xác nhận Đặt chỗ
             </Button>
         ) : (
             <Button asChild className="rounded-full">
-                <a href="/">Done</a>
+                <a href="/">Hoàn tất</a>
             </Button>
         )}
       </div>

@@ -19,8 +19,8 @@ import { useBranch } from '@/context/site-branch-context';
 import { useMemo } from 'react';
 
 // export const metadata = {
-//   title: 'Our Stylists | Shear Bliss',
-//   description: 'Meet the talented team of stylists at Shear Bliss.',
+//   title: 'Các nhà tạo mẫu của chúng tôi | Shear Bliss',
+//   description: 'Gặp gỡ đội ngũ nhà tạo mẫu tài năng tại Shear Bliss.',
 // };
 
 export default function StylistsPage() {
@@ -37,9 +37,9 @@ export default function StylistsPage() {
   return (
     <div className="container py-12 md:py-20">
       <div className="mx-auto mb-12 max-w-2xl text-center">
-        <h1 className="font-headline text-4xl font-bold md:text-5xl">Meet Our Stylists</h1>
+        <h1 className="font-headline text-4xl font-bold md:text-5xl">Gặp gỡ các nhà tạo mẫu của chúng tôi</h1>
         <p className="mt-4 text-lg text-muted-foreground">
-          Our team of passionate and skilled professionals is dedicated to making you look and feel your best.
+          Đội ngũ chuyên gia đầy nhiệt huyết và kỹ năng của chúng tôi luôn tận tâm để bạn trông và cảm thấy tốt nhất.
         </p>
       </div>
       <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
@@ -76,14 +76,14 @@ export default function StylistsPage() {
             </CardContent>
             <CardFooter className="flex justify-center p-4">
               <Button asChild className="rounded-full w-full">
-                <Link href={`/book?stylist=${stylist.id}`}>Book with {stylist.name.split(' ')[0]}</Link>
+                <Link href={`/book?stylist=${stylist.id}`}>Đặt lịch với {stylist.name.split(' ')[0]}</Link>
               </Button>
             </CardFooter>
           </Card>
         ))}
          {filteredStylists.length === 0 && (
           <div className="sm:col-span-2 lg:col-span-4 text-center py-16">
-            <p className="text-muted-foreground">No stylists available at the selected branch.</p>
+            <p className="text-muted-foreground">Không có nhà tạo mẫu nào tại chi nhánh đã chọn.</p>
           </div>
         )}
       </div>
