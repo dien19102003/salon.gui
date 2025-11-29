@@ -17,12 +17,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { MoreHorizontal, PlusCircle } from 'lucide-react';
+import { MoreHorizontal, PlusCircle, ArrowUpRight } from 'lucide-react';
 import Image from 'next/image';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { DataTable, type ColumnDef } from '@/components/ui/data-table';
 import type { Service } from '@/lib/data';
+import Link from 'next/link';
 
 // Simulate an API call
 const fetchServices: (page: number, size: number) => Promise<{ meta: any; data: Service[]; }> = async (page, size) => {
@@ -85,7 +86,7 @@ export default function ServicesPage() {
     },
     {
       key: 'price',
-      title: 'Price',
+      title: 'Default Price',
       render: (_, record) => `$${record.price.toFixed(2)}`
     },
     {
@@ -95,28 +96,36 @@ export default function ServicesPage() {
     },
     {
       key: 'actions',
-      title: <span className="sr-only">Actions</span>,
+      title: 'Actions',
       className: 'text-right',
-      render: () => (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button aria-haspopup="true" size="icon" variant="ghost">
-              <MoreHorizontal className="h-4 w-4" />
-              <span className="sr-only">Toggle menu</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem>Edit</DropdownMenuItem>
-            <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+      render: (_, record) => (
+         <div className="flex justify-end gap-2">
+           <Button asChild variant="outline" size="sm">
+              <Link href={`/admin/services/${record.id}`}>
+                  Details
+                  <ArrowUpRight className="h-4 w-4 ml-2" />
+              </Link>
+           </Button>
+            <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button aria-haspopup="true" size="icon" variant="ghost">
+                <MoreHorizontal className="h-4 w-4" />
+                <span className="sr-only">Toggle menu</span>
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                <DropdownMenuItem>Edit</DropdownMenuItem>
+                <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
+            </DropdownMenuContent>
+            </DropdownMenu>
+        </div>
       )
     }
   ];
 
   return (
-    <Card>
+    <Card className="shadow-none border-border">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>

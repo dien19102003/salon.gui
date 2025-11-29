@@ -9,6 +9,35 @@ const getImage = (id: string): ImagePlaceholder => {
   return image;
 };
 
+export enum SiteServicePriceStates {
+    Active = 1,
+    Inactive = 2,
+}
+
+export const SiteServicePriceStatesEnum = [
+    { value: SiteServicePriceStates.Active, label: 'Hoạt động' },
+    { value: SiteServicePriceStates.Inactive, label: 'Ngưng hoạt động' },
+];
+
+export type Branch = {
+    id: string;
+    name: string;
+    address: string;
+}
+
+export const branches: Branch[] = [
+    { id: 'hcm', name: 'Chi nhánh Hồ Chí Minh', address: '123 Nguyễn Huệ, Quận 1, TP.HCM'},
+    { id: 'hn', name: 'Chi nhánh Hà Nội', address: '456 Lê Thái Tổ, Hoàn Kiếm, Hà Nội'},
+    { id: 'dn', name: 'Chi nhánh Đà Nẵng', address: '789 Bạch Đằng, Hải Châu, Đà Nẵng'}
+];
+
+
+export type BranchPrice = {
+  branchId: string;
+  price: number;
+  status: 'Active' | 'Inactive';
+};
+
 export type Service = {
   id: string;
   name: string;
@@ -18,6 +47,7 @@ export type Service = {
   price: number;
   image: ImagePlaceholder;
   category: 'Haircut' | 'Coloring' | 'Styling' | 'Treatments';
+  branchPricing: BranchPrice[];
 };
 
 export const services: Service[] = [
@@ -30,6 +60,11 @@ export const services: Service[] = [
     price: 80,
     image: getImage('service-haircut'),
     category: 'Haircut',
+    branchPricing: [
+        { branchId: 'hcm', price: 85, status: 'Active' },
+        { branchId: 'hn', price: 80, status: 'Active' },
+        { branchId: 'dn', price: 75, status: 'Inactive' },
+    ]
   },
   {
     id: '2',
@@ -40,6 +75,10 @@ export const services: Service[] = [
     price: 150,
     image: getImage('service-coloring'),
     category: 'Coloring',
+    branchPricing: [
+        { branchId: 'hcm', price: 160, status: 'Active' },
+        { branchId: 'hn', price: 150, status: 'Active' },
+    ]
   },
   {
     id: '3',
@@ -50,6 +89,7 @@ export const services: Service[] = [
     price: 95,
     image: getImage('service-styling'),
     category: 'Styling',
+    branchPricing: []
   },
   {
     id: '4',
@@ -60,6 +100,9 @@ export const services: Service[] = [
     price: 65,
     image: getImage('service-treatment'),
     category: 'Treatments',
+    branchPricing: [
+        { branchId: 'hcm', price: 70, status: 'Active' },
+    ]
   },
   {
     id: '5',
@@ -70,6 +113,7 @@ export const services: Service[] = [
     price: 250,
     image: getImage('service-coloring'),
     category: 'Coloring',
+    branchPricing: []
   },
   {
     id: '6',
@@ -80,6 +124,7 @@ export const services: Service[] = [
     price: 55,
     image: getImage('service-styling'),
     category: 'Styling',
+    branchPricing: []
   },
 ];
 
