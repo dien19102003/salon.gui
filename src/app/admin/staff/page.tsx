@@ -29,6 +29,11 @@ import { useBranch } from '@/context/admin-branch-context';
 const fetchStylists: FetchData<Stylist> = async (page, size, context) => {
     const { branchId } = context || {};
 
+    // In a real app, you would fetch this from an API
+    // const response = await fetch(`/api/stylists?page=${page}&size=${size}&branchId=${branchId}`);
+    // const result: ApiResponse<Stylist> = await response.json();
+    // return result;
+
     const filteredStylists = branchId === 'all'
         ? allStylists
         : allStylists.filter(stylist => stylist.branchId === branchId);

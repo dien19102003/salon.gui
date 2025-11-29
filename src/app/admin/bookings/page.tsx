@@ -33,6 +33,11 @@ import { useBranch } from '@/context/admin-branch-context';
 const fetchBookings: FetchData<Booking> = async (page, size, context) => {
   const { branchId } = context || {};
   
+  // In a real app, you would fetch this from an API
+  // const response = await fetch(`/api/bookings?page=${page}&size=${size}&branchId=${branchId}`);
+  // const result: ApiResponse<Booking> = await response.json();
+  // return result;
+
   const filteredBookings = branchId === 'all' 
     ? allBookings 
     : allBookings.filter(booking => {

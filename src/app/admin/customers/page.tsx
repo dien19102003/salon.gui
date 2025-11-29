@@ -1,3 +1,4 @@
+
 'use client';
 
 import * as React from 'react';
@@ -29,6 +30,11 @@ import { Customer } from '@/lib/data';
 
 // Simulate an API call
 const fetchCustomers: FetchData<Customer> = async (page, size) => {
+  // In a real app, you would fetch this from an API
+  // const response = await fetch(`/api/customers?page=${page}&size=${size}`);
+  // const result: ApiResponse<Customer> = await response.json();
+  // return result;
+
   const total = allCustomers.length;
   const pageCount = Math.ceil(total / size);
   const start = (page - 1) * size;

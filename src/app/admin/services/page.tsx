@@ -30,6 +30,11 @@ import { useBranch } from '@/context/admin-branch-context';
 const fetchServices: FetchData<Service> = async (page, size, context) => {
   const { branchId } = context || {};
 
+  // In a real app, you would fetch this from an API
+  // const response = await fetch(`/api/services?page=${page}&size=${size}&branchId=${branchId}`);
+  // const result: ApiResponse<Service> = await response.json();
+  // return result;
+
   const filteredServices = branchId === 'all'
     ? allServices
     : allServices.filter(service => 

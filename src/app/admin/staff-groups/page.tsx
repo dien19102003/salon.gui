@@ -19,12 +19,17 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal, PlusCircle, ArrowUpRight } from 'lucide-react';
-import { DataTable, type ColumnDef } from '@/components/ui/data-table';
+import { DataTable, type ColumnDef, type FetchData } from '@/components/ui/data-table';
 import type { StaffGroup } from '@/lib/data';
 import Link from 'next/link';
 
 // Simulate an API call
-const fetchStaffGroups: (page: number, size: number) => Promise<{ meta: any; data: StaffGroup[]; }> = async (page, size) => {
+const fetchStaffGroups: FetchData<StaffGroup> = async (page, size) => {
+    // In a real app, you would fetch this from an API
+    // const response = await fetch(`/api/staff-groups?page=${page}&size=${size}`);
+    // const result: ApiResponse<StaffGroup> = await response.json();
+    // return result;
+
   const total = allStaffGroups.length;
   const pageCount = Math.ceil(total / size);
   const start = (page - 1) * size;
