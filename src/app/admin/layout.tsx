@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -22,6 +23,7 @@ import {
   Settings,
   LifeBuoy,
   Users2,
+  Building,
 } from 'lucide-react';
 import { Logo } from '@/components/icons/logo';
 import { Button } from '@/components/ui/button';
@@ -34,11 +36,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { cn } from '@/lib/utils';
-import { Plus_Jakarta_Sans } from 'next/font/google';
+import { Inter } from 'next/font/google';
+import { BranchProvider, useBranch } from '@/context/admin-branch-context';
+import { branches } from '@/lib/data';
 
-const fontSans = Plus_Jakarta_Sans({
-  subsets: ['latin', 'vietnamese'],
+
+const fontSans = Inter({
+  subsets: ['latin'],
   variable: '--font-sans',
 });
 
@@ -51,21 +63,43 @@ const menuItems = [
   { href: '/admin/staff-groups', label: 'Nhóm nhân viên', icon: Users2 },
 ];
 
+
+function BranchSelector() {
+    const { selectedBranch, setSelectedBranch } = useBranch();
+    
+    // API call would happen here, for now we use static data
+    const availableBranches = branches;
+
+    return (
+        <div className="flex items-center gap-2">
+            <Building className="h-5 w-5 text-muted-foreground" />
+            <Select value={selectedBranch} onValueChange={setSelectedBranch}>
+                <SelectTrigger className="w-auto border-none bg-transparent shadow-none focus:ring-0">
+                    <SelectValue placeholder="Chọn chi nhánh..." />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="all">Tất cả chi nhánh</SelectItem>
+                    {availableBranches.map(branch => (
+                        <SelectItem key={branch.id} value={branch.id}>{branch.name}</SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
+        </div>
+    );
+}
+
 function AdminHeader() {
     
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 flex h-16 items-center gap-4 border-b bg-background px-4 shadow-sm md:px-6">
-        <div className="flex items-center gap-4">
-            <div className="md:w-[244px] lg:w-[244px] flex items-center gap-2">
-                <Link href="/admin" className="flex items-center gap-2 font-bold text-lg text-primary">
-                    <Logo className="h-6 w-auto" />
-                    <h1 className="font-bold text-lg hidden md:block">Shear Bliss</h1>
-                </Link>
+    <header className="fixed top-0 left-0 right-0 z-30 flex h-16 items-center gap-4 border-b bg-background px-4 shadow-sm md:px-6">
+        <div className="flex items-center gap-2">
+            <div className="flex h-16 items-center justify-center border-r border-dashed pr-4 md:w-[244px] group-data-[state=collapsed]/sidebar-wrapper:md:w-[70px] transition-all duration-300">
+                 <SidebarTrigger />
             </div>
-            <SidebarTrigger className="hidden md:flex" />
         </div>
 
         <div className="flex flex-1 items-center justify-end gap-4">
+            <BranchSelector />
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-10 w-10 rounded-full">
@@ -110,14 +144,19 @@ function AdminSidebar() {
 
   return (
     <Sidebar>
-        <SidebarHeader className="h-16" />
+        <SidebarHeader className="h-16 flex items-center justify-center p-2 group-data-[state=expanded]/sidebar-wrapper:justify-start group-data-[state=expanded]/sidebar-wrapper:pl-4">
+            <Link href="/admin" className="flex items-center gap-2">
+                <Logo className="h-7 w-auto text-primary" />
+                <h1 className="font-bold text-lg text-primary transition-opacity duration-300 group-data-[state=collapsed]/sidebar-wrapper:opacity-0">Shear Bliss</h1>
+            </Link>
+        </SidebarHeader>
         <SidebarContent>
             <SidebarMenu>
             {menuItems.map((item) => (
                 <SidebarMenuItem key={item.href}>
                 <Link href={item.href} className="contents">
                     <SidebarMenuButton
-                    isActive={pathname.startsWith(item.href)}
+                    isActive={pathname === item.href || (item.href !== '/admin' && pathname.startsWith(item.href))}
                     tooltip={item.label}
                     >
                     <item.icon className="h-5 w-5" />
@@ -134,16 +173,24 @@ function AdminSidebar() {
   );
 }
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <SidebarProvider>
-      <div className={cn('min-h-screen w-full bg-muted/40 font-sans', fontSans.variable)}>
+function AdminLayoutContent({ children }: { children: React.ReactNode }) {
+    return (
+        <div className={cn('min-h-screen w-full bg-muted/40 font-sans', fontSans.variable)}>
         <AdminSidebar />
         <div className="flex flex-col mt-16 md:ml-[260px] group-data-[state=collapsed]/sidebar-wrapper:md:ml-[70px] transition-all duration-300">
           <AdminHeader />
-          <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6 bg-gray-100 dark:bg-gray-900">{children}</main>
+          <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">{children}</main>
         </div>
       </div>
+    )
+}
+
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <SidebarProvider>
+        <BranchProvider>
+            <AdminLayoutContent>{children}</AdminLayoutContent>
+        </BranchProvider>
     </SidebarProvider>
   );
 }

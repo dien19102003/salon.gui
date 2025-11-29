@@ -1,3 +1,4 @@
+
 'use client';
 
 import * as React from 'react';
@@ -21,17 +22,25 @@ import { MoreHorizontal, PlusCircle, ArrowUpRight } from 'lucide-react';
 import Image from 'next/image';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
-import { DataTable, type ColumnDef } from '@/components/ui/data-table';
+import { DataTable, type ColumnDef, type FetchData } from '@/components/ui/data-table';
 import type { Service } from '@/lib/data';
 import Link from 'next/link';
+import { useBranch } from '@/context/admin-branch-context';
 
-// Simulate an API call
-const fetchServices: (page: number, size: number) => Promise<{ meta: any; data: Service[]; }> = async (page, size) => {
-  const total = allServices.length;
+const fetchServices: FetchData<Service> = async (page, size, context) => {
+  const { branchId } = context || {};
+
+  const filteredServices = branchId === 'all'
+    ? allServices
+    : allServices.filter(service => 
+        service.branchPricing.some(p => p.branchId === branchId && p.status === 'Active') || service.branchPricing.length === 0
+      );
+
+  const total = filteredServices.length;
   const pageCount = Math.ceil(total / size);
   const start = (page - 1) * size;
   const end = start + size;
-  const data = allServices.slice(start, end);
+  const data = filteredServices.slice(start, end);
 
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -48,11 +57,13 @@ const fetchServices: (page: number, size: number) => Promise<{ meta: any; data: 
         },
         data,
       });
-    }, 300); // Simulate network delay
+    }, 300);
   });
 };
 
 export default function ServicesPage() {
+  const { selectedBranch } = useBranch();
+
   const columns: ColumnDef<Service>[] = [
     {
       key: 'image',
@@ -86,13 +97,27 @@ export default function ServicesPage() {
     },
     {
       key: 'price',
-      title: 'Default Price',
-      render: (_, record) => `$${record.price.toFixed(2)}`
+      title: 'Price',
+      render: (_, record) => {
+        if (selectedBranch !== 'all') {
+          const branchPrice = record.branchPricing.find(p => p.branchId === selectedBranch);
+          if (branchPrice) {
+            return `$${branchPrice.price.toFixed(2)}`;
+          }
+        }
+        return `$${record.price.toFixed(2)} (Default)`;
+      }
     },
     {
         key: 'status',
         title: 'Status',
-        render: () => <Switch defaultChecked={true} aria-label="Toggle service status" />
+        render: (_, record) => {
+            if (selectedBranch !== 'all') {
+                const branchInfo = record.branchPricing.find(p => p.branchId === selectedBranch);
+                return <Switch defaultChecked={branchInfo ? branchInfo.status === 'Active' : true} aria-label="Toggle service status" />
+            }
+            return <Switch defaultChecked={true} aria-label="Toggle service status" />
+        }
     },
     {
       key: 'actions',
@@ -141,7 +166,7 @@ export default function ServicesPage() {
         </div>
       </CardHeader>
       <CardContent>
-        <DataTable columns={columns} fetchData={fetchServices} />
+        <DataTable columns={columns} fetchData={fetchServices} fetchContext={{ branchId: selectedBranch }}/>
       </CardContent>
     </Card>
   );

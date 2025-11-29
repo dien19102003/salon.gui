@@ -1,3 +1,4 @@
+
 'use client';
 
 import * as React from 'react';
@@ -45,11 +46,12 @@ export interface ApiResponse<T> {
   data: T[];
 }
 
-export type FetchData<T> = (page: number, size: number) => Promise<ApiResponse<T>>;
+export type FetchData<T> = (page: number, size: number, context?: any) => Promise<ApiResponse<T>>;
 
 interface DataTableProps<T> {
   columns: ColumnDef<T>[];
   fetchData: FetchData<T>;
+  fetchContext?: any;
   initialPage?: number;
   initialSize?: number;
 }
@@ -57,6 +59,7 @@ interface DataTableProps<T> {
 export function DataTable<T extends { id: string | number }>({
   columns,
   fetchData,
+  fetchContext,
   initialPage = 1,
   initialSize = 10,
 }: DataTableProps<T>) {
@@ -66,11 +69,16 @@ export function DataTable<T extends { id: string | number }>({
   const [page, setPage] = React.useState(initialPage);
   const [size, setSize] = React.useState(initialSize);
 
+  // Reset to page 1 when context changes
+  React.useEffect(() => {
+    setPage(1);
+  }, [fetchContext]);
+
   React.useEffect(() => {
     const loadData = async () => {
       setLoading(true);
       try {
-        const response = await fetchData(page, size);
+        const response = await fetchData(page, size, fetchContext);
         setData(response.data);
         setMeta(response.meta);
       } catch (error) {
@@ -82,7 +90,7 @@ export function DataTable<T extends { id: string | number }>({
     };
 
     loadData();
-  }, [page, size, fetchData]);
+  }, [page, size, fetchData, fetchContext]);
 
   const handleNextPage = () => {
     if (meta?.canNext) {
@@ -145,9 +153,10 @@ export function DataTable<T extends { id: string | number }>({
       </div>
       <div className="flex items-center justify-between">
         <div className="text-sm text-muted-foreground">
-          {meta && (
-            `Showing ${((meta.page - 1) * meta.size) + 1} to ${Math.min(meta.page * meta.size, meta.total)} of ${meta.total} entries`
-          )}
+          {meta && meta.total > 0
+            ? `Showing ${((meta.page - 1) * meta.size) + 1} to ${Math.min(meta.page * meta.size, meta.total)} of ${meta.total} entries`
+            : 'No entries to show'
+          }
         </div>
         <div className="flex items-center space-x-2">
           <Button

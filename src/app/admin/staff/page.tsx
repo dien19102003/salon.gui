@@ -1,3 +1,4 @@
+
 'use client';
 
 import * as React from 'react';
@@ -19,18 +20,24 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal, PlusCircle, Star, ArrowUpRight } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { DataTable, type ColumnDef } from '@/components/ui/data-table';
+import { DataTable, type ColumnDef, type FetchData } from '@/components/ui/data-table';
 import type { Stylist } from '@/lib/data';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Link from 'next/link';
+import { useBranch } from '@/context/admin-branch-context';
 
-// Simulate an API call
-const fetchStylists: (page: number, size: number) => Promise<{ meta: any; data: Stylist[]; }> = async (page, size) => {
-  const total = allStylists.length;
-  const pageCount = Math.ceil(total / size);
-  const start = (page - 1) * size;
-  const end = start + size;
-  const data = allStylists.slice(start, end);
+const fetchStylists: FetchData<Stylist> = async (page, size, context) => {
+    const { branchId } = context || {};
+
+    const filteredStylists = branchId === 'all'
+        ? allStylists
+        : allStylists.filter(stylist => stylist.branchId === branchId);
+
+    const total = filteredStylists.length;
+    const pageCount = Math.ceil(total / size);
+    const start = (page - 1) * size;
+    const end = start + size;
+    const data = filteredStylists.slice(start, end);
 
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -47,11 +54,13 @@ const fetchStylists: (page: number, size: number) => Promise<{ meta: any; data: 
         },
         data,
       });
-    }, 300); // Simulate network delay
+    }, 300);
   });
 };
 
 export default function StaffPage() {
+    const { selectedBranch } = useBranch();
+
   const columns: ColumnDef<Stylist>[] = [
     {
       key: 'name',
@@ -138,7 +147,7 @@ export default function StaffPage() {
         </div>
       </CardHeader>
       <CardContent>
-        <DataTable columns={columns} fetchData={fetchStylists} />
+        <DataTable columns={columns} fetchData={fetchStylists} fetchContext={{ branchId: selectedBranch }}/>
       </CardContent>
     </Card>
   );

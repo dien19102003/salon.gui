@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -20,9 +21,6 @@ import {
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
-const SIDEBAR_WIDTH_OPEN = "260px"
-const SIDEBAR_WIDTH_COLLAPSED = "70px"
-const SIDEBAR_KEYBOARD_SHORTCUT = "b"
 
 type SidebarContext = {
   state: "expanded" | "collapsed"
@@ -68,8 +66,20 @@ const SidebarProvider = React.forwardRef<
     const isMobile = useIsMobile()
     const [openMobile, setOpenMobile] = React.useState(false)
 
-    const [_open, _setOpen] = React.useState(defaultOpen)
+    // Set initial state from cookie
+    const getInitialOpen = () => {
+        if (typeof window !== 'undefined') {
+            const cookieValue = document.cookie.split('; ').find(row => row.startsWith(`${SIDEBAR_COOKIE_NAME}=`));
+            if (cookieValue) {
+                return cookieValue.split('=')[1] === 'true';
+            }
+        }
+        return defaultOpen;
+    };
+    
+    const [_open, _setOpen] = React.useState(getInitialOpen);
     const open = openProp ?? _open
+    
     const setOpen = React.useCallback(
       (value: boolean | ((value: boolean) => boolean)) => {
         const openState = typeof value === "function" ? value(open) : value
@@ -89,20 +99,6 @@ const SidebarProvider = React.forwardRef<
         : setOpen((open) => !open)
     }, [isMobile, setOpen, setOpenMobile])
 
-    React.useEffect(() => {
-      const handleKeyDown = (event: KeyboardEvent) => {
-        if (
-          event.key === SIDEBAR_KEYBOARD_SHORTCUT &&
-          (event.metaKey || event.ctrlKey)
-        ) {
-          event.preventDefault()
-          toggleSidebar()
-        }
-      }
-
-      window.addEventListener("keydown", handleKeyDown)
-      return () => window.removeEventListener("keydown", handleKeyDown)
-    }, [toggleSidebar])
 
     const state = open ? "expanded" : "collapsed"
 
@@ -267,7 +263,7 @@ const SidebarHeader = React.forwardRef<
     <div
       ref={ref}
       data-sidebar="header"
-      className={cn("flex flex-col", className)}
+      className={cn("flex flex-col border-b", className)}
       {...props}
     />
   )
@@ -282,7 +278,7 @@ const SidebarFooter = React.forwardRef<
     <div
       ref={ref}
       data-sidebar="footer"
-      className={cn("p-2 mt-auto", className)}
+      className={cn("p-2 mt-auto border-t", className)}
       {...props}
     />
   )
@@ -355,7 +351,7 @@ const sidebarMenuButtonVariants = cva(
   {
     variants: {
       variant: {
-        default: "text-muted-foreground hover:bg-accent/50 hover:text-foreground data-[active=true]:bg-accent data-[active=true]:text-accent-foreground",
+        default: "text-muted-foreground hover:bg-accent/50 hover:text-foreground data-[active=true]:bg-primary/10 data-[active=true]:text-primary",
       },
     },
     defaultVariants: {
@@ -405,13 +401,16 @@ const SidebarMenuButton = React.forwardRef<
     
     const content = typeof tooltip === 'string' ? <p>{tooltip}</p> : tooltip;
 
+    if (state === 'expanded') {
+        return button;
+    }
+
     return (
       <Tooltip>
         <TooltipTrigger asChild>{button}</TooltipTrigger>
         <TooltipContent
           side="right"
           align="center"
-          hidden={state !== "collapsed"}
         >
             {content}
         </TooltipContent>
