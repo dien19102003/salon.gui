@@ -6,14 +6,14 @@ const IDENTITY_BASE_URL =
   process.env.VITE_API_IDENTITY ??
   "https://api.identity.app.riviu.com.vn";
 
-// const SALON_BASE_URL =
-//   process.env.NEXT_PUBLIC_API_SALON ??
-//   process.env.VITE_API_SALON ??
-//   "https://api.salon.dnht.dev.eggstech.io";
 const SALON_BASE_URL =
   process.env.NEXT_PUBLIC_API_SALON ??
   process.env.VITE_API_SALON ??
-  "http://localhost:5000";
+  "https://api.salon.dnht.dev.eggstech.io";
+// const SALON_BASE_URL =
+//   process.env.NEXT_PUBLIC_API_SALON ??
+//   process.env.VITE_API_SALON ??
+//   "http://localhost:5000";
 
 type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
 
