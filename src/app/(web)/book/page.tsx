@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { BookingFlow } from '@/components/booking/booking-flow';
 import { useSite } from '@/context/site-branch-context';
@@ -30,7 +30,7 @@ type Stylist = {
   };
 };
 
-export default function BookPage() {
+function BookPageContent() {
   const searchParams = useSearchParams();
   const serviceId = searchParams.get('service') ?? undefined;
   const stylistId = searchParams.get('stylist') ?? undefined;
@@ -232,8 +232,8 @@ export default function BookPage() {
           </p>
         </div>
         <div className="mt-12">
-          <BookingFlow 
-            services={services} 
+          <BookingFlow
+            services={services}
             stylists={stylists}
             siteId={selectedSiteId}
             initialServiceId={serviceId}
@@ -242,5 +242,29 @@ export default function BookPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function BookPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="container py-12 md:py-20">
+          <div className="mx-auto max-w-4xl">
+            <div className="text-center">
+              <h1 className="font-headline text-4xl font-bold md:text-5xl">Đặt lịch hẹn</h1>
+              <p className="mt-4 text-lg text-muted-foreground">
+                Thực hiện theo các bước dưới đây để lên lịch cho chuyến thăm của bạn.
+              </p>
+            </div>
+            <div className="mt-12">
+              <Skeleton className="h-96 w-full" />
+            </div>
+          </div>
+        </div>
+      }
+    >
+      <BookPageContent />
+    </Suspense>
   );
 }
