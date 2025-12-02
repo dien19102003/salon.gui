@@ -33,7 +33,7 @@ export default function ContactPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-muted-foreground">
-              <p>123 Đường Sắc Đẹp, Thành phố Glamour, 12345</p>
+              <p>79 Ngô Thị Bình, phường Tân Hưng, quận 7, TPHCM</p>
               <p className="flex items-center gap-2">
                 <Phone className="h-4 w-4" /> (123) 456-7890
               </p>
