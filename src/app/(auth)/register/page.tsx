@@ -11,11 +11,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Logo } from "@/components/icons/logo";
 import { salonApi } from "@/lib/api-client";
 
-export const metadata = {
-  title: "Tạo tài khoản | Eggstech Salon",
-  description: "Đăng ký tài khoản Eggstech Salon mới.",
-};
-
 export default function RegisterPage() {
   const router = useRouter();
 
