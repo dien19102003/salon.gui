@@ -2,6 +2,13 @@
 'use client';
 
 import * as React from 'react';
+import Link from 'next/link';
+import {
+  PlusCircle,
+  ArrowUpRight,
+  MoreHorizontal
+} from 'lucide-react';
+
 import {
   Card,
   CardContent,
@@ -10,12 +17,6 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { customers as allCustomers } from '@/lib/data';
-import {
-  PlusCircle,
-  ArrowUpRight,
-  MoreHorizontal
-} from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -24,44 +25,59 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import Link from 'next/link';
 import { DataTable, type ColumnDef, type FetchData } from '@/components/ui/data-table';
-import { Customer } from '@/lib/data';
+import { salonApi } from '@/lib/api-client';
 
-// Simulate an API call
-const fetchCustomers: FetchData<Customer> = async (page, size) => {
-  // In a real app, you would fetch this from an API
-  // const response = await fetch(`/api/customers?page=${page}&size=${size}`);
-  // const result: ApiResponse<Customer> = await response.json();
-  // return result;
+type CustomerRow = {
+  id: string;
+  name: string;
+  email?: string | null;
+  phone?: string | null;
+  totalBookings?: number;
+  totalSpent?: number;
+};
 
-  const total = allCustomers.length;
-  const pageCount = Math.ceil(total / size);
-  const start = (page - 1) * size;
-  const end = start + size;
-  const data = allCustomers.slice(start, end);
+// Gọi API thật từ backend: POST /Customer/GetPage
+const fetchCustomers: FetchData<CustomerRow> = async (page, size) => {
+  // Filter tối thiểu theo BaseFilterAdminDto (Page, Size)
+  const body = {
+    page,
+    size,
+  };
 
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        meta: {
-          traceId: `trace-${Date.now()}`,
-          success: true,
-          total,
-          page,
-          size,
-          pageCount,
-          canNext: page < pageCount,
-          canPrev: page > 1,
-        },
-        data,
-      });
-    }, 500); // Simulate network delay
-  });
+  const response = await salonApi.post<any>('/Customer/GetPage', body);
+
+  // Giả định backend trả về { meta, data } tương thích với ApiResponse
+  // Nếu structure khác, chỉ cần chỉnh lại mapping ở đây.
+  const apiMeta = response.meta ?? {
+    traceId: response.traceId ?? `trace-${Date.now()}`,
+    success: true,
+    total: response.total ?? 0,
+    page: response.page ?? page,
+    size: response.size ?? size,
+    pageCount: response.pageCount ?? 0,
+    canNext: response.canNext ?? false,
+    canPrev: response.canPrev ?? false,
+  };
+
+  const items: CustomerRow[] = (response.data ?? []).map((item: any) => ({
+    id: item.id,
+    name: item.name,
+    email: item.email,
+    phone: item.phone,
+    // TODO: map đúng từ CustomerDataAdminDto nếu cần
+    totalBookings: item.totalBookings ?? 0,
+    totalSpent: item.totalRevenue ?? 0,
+  }));
+
+  return {
+    meta: apiMeta,
+    data: items,
+  };
 };
 
 export default function CustomersPage() {
-  const columns: ColumnDef<Customer>[] = [
+  const columns: ColumnDef<CustomerRow>[] = [
     {
       key: 'name',
       title: 'Tên',

@@ -2,6 +2,13 @@
 'use client';
 
 import * as React from 'react';
+import Link from 'next/link';
+import {
+  PlusCircle,
+  MoreHorizontal
+} from 'lucide-react';
+import { format } from 'date-fns';
+
 import {
   Card,
   CardContent,
@@ -10,11 +17,6 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { bookings as allBookings } from '@/lib/data';
-import {
-  PlusCircle,
-  MoreHorizontal
-} from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,47 +24,62 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import Link from 'next/link';
-import { DataTable, type ColumnDef, type ApiResponse, type FetchData } from '@/components/ui/data-table';
-import { Booking } from '@/lib/data';
+import { DataTable, type ColumnDef, type FetchData } from '@/components/ui/data-table';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { format } from 'date-fns';
+import { salonApi } from '@/lib/api-client';
 
-const fetchBookings: FetchData<Booking> = async (page, size) => {
-  // Trong một ứng dụng thực tế, bạn sẽ tìm nạp điều này từ một API
-  // const response = await fetch(`/api/bookings?page=${page}&size=${size}`);
-  // const result: ApiResponse<Booking> = await response.json();
-  // return result;
+type BookingRow = {
+  id: string;
+  customerName: string;
+  customerEmail?: string | null;
+  serviceName?: string | null;
+  stylistName?: string | null;
+  date: string;
+  time: string;
+  status: string;
+};
 
-  const total = allBookings.length;
-  const pageCount = Math.ceil(total / size);
-  const start = (page - 1) * size;
-  const end = start + size;
-  const data = allBookings.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(start, end);
+// Gọi API thật: POST /Booking/GetPage
+const fetchBookings: FetchData<BookingRow> = async (page, size) => {
+  const body = {
+    page,
+    size,
+  };
 
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        meta: {
-          traceId: `trace-${Date.now()}`,
-          success: true,
-          total,
-          page,
-          size,
-          pageCount,
-          canNext: page < pageCount,
-          canPrev: page > 1,
-        },
-        data,
-      });
-    }, 300); // Mô phỏng độ trễ mạng
-  });
+  const response = await salonApi.post<any>('/Booking/GetPage', body);
+
+  const apiMeta = response.meta ?? {
+    traceId: response.traceId ?? `trace-${Date.now()}`,
+    success: true,
+    total: response.total ?? 0,
+    page: response.page ?? page,
+    size: response.size ?? size,
+    pageCount: response.pageCount ?? 0,
+    canNext: response.canNext ?? false,
+    canPrev: response.canPrev ?? false,
+  };
+
+  const items: BookingRow[] = (response.data ?? []).map((item: any) => ({
+    id: item.id,
+    customerName: item.customer?.name ?? '',
+    customerEmail: item.customer?.email ?? null,
+    serviceName: item.code ?? '',
+    stylistName: item.staff?.name ?? '',
+    date: item.bookingDate,
+    time: `${item.startTime} - ${item.endTime}`,
+    status: item.state,
+  }));
+
+  return {
+    meta: apiMeta,
+    data: items,
+  };
 };
 
 export default function BookingsPage() {
 
-  const columns: ColumnDef<Booking>[] = [
+  const columns: ColumnDef<BookingRow>[] = [
     {
       key: 'customer',
       title: 'Khách hàng',

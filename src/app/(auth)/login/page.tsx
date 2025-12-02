@@ -1,77 +1,138 @@
-import Link from "next/link"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Logo } from "@/components/icons/logo"
+import { useState, FormEvent } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-export const metadata = {
-    title: 'Đăng nhập | Eggstech Salon',
-    description: 'Đăng nhập vào tài khoản Eggstech Salon của bạn.',
-};
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Logo } from "@/components/icons/logo";
+import { identityApi, authUser, salonApi } from "@/lib/api-client";
 
 export default function LoginPage() {
+  const router = useRouter();
+
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    setErrorMessage(null);
+    setIsSubmitting(true);
+
+    try {
+      await identityApi.login(
+        {
+          username,
+          password,
+        },
+        "/Identity/Login/Password"
+      );
+
+      // Ngay sau khi đăng nhập: tách accessToken để lấy thông tin user
+      // rồi gọi API Customer/GetDetailByAccountId để load thông tin khách hàng.
+      const currentUser = authUser.getCurrentUser();
+
+      if (currentUser?.id) {
+        try {
+          await salonApi.get(
+            `/Customer/GetDetailByAccountId/${encodeURIComponent(
+              currentUser.id
+            )}`
+          );
+        } catch (customerError) {
+          // Không chặn flow đăng nhập nếu không lấy được thông tin khách hàng
+          // eslint-disable-next-line no-console
+          console.error(
+            "Không thể tải thông tin khách hàng sau khi đăng nhập",
+            customerError
+          );
+        }
+      }
+
+      router.push("/");
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error("Login failed", error);
+      setErrorMessage("Tên đăng nhập hoặc mật khẩu không chính xác.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
-     <>
-        <div className="grid gap-2 text-center">
-            <Logo className="h-8 w-auto text-primary mb-4" />
-            <h1 className="text-3xl font-bold">Chào mừng trở lại</h1>
-            <p className="text-balance text-muted-foreground">
-                Nhập thông tin đăng nhập để truy cập vào tài khoản của bạn
-            </p>
+    <>
+      <div className="grid gap-2 text-center">
+        <Logo className="h-8 w-auto text-primary mb-4" />
+        <h1 className="text-3xl font-bold">Chào mừng trở lại</h1>
+        <p className="text-balance text-muted-foreground">
+          Nhập thông tin đăng nhập để truy cập vào tài khoản của bạn
+        </p>
+      </div>
+
+      <form className="grid gap-4 mt-6" onSubmit={handleSubmit}>
+        <div className="grid gap-2">
+          <Label htmlFor="username">Tên đăng nhập</Label>
+          <Input
+            id="username"
+            type="text"
+            placeholder="developer"
+            value={username}
+            onChange={(event) => setUsername(event.target.value)}
+            required
+          />
         </div>
-        <div className="grid gap-4">
-            <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                id="email"
-                type="email"
-                placeholder="m@example.com"
-                required
-                />
-            </div>
-            <div className="grid gap-2">
-                <div className="flex items-center">
-                <Label htmlFor="password">Mật khẩu</Label>
-                <Link
-                    href="/forgot-password"
-                    className="ml-auto inline-block text-sm underline"
-                >
-                    Quên mật khẩu?
-                </Link>
-                </div>
-                <Input id="password" type="password" required />
-            </div>
-             <div className="flex items-center space-x-2">
-                <Checkbox id="remember-me" />
-                <Label
-                    htmlFor="remember-me"
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                    Ghi nhớ tôi
-                </Label>
-            </div>
-            <Button type="submit" className="w-full">
-                Đăng nhập
-            </Button>
-            <Button variant="outline" className="w-full">
-                Đăng nhập với Google
-            </Button>
-        </div>
-        <div className="mt-4 text-center text-sm">
-            Chưa có tài khoản?{" "}
-            <Link href="/register" className="underline">
-                Đăng ký
+        <div className="grid gap-2">
+          <div className="flex items-center">
+            <Label htmlFor="password">Mật khẩu</Label>
+            <Link
+              href="/forgot-password"
+              className="ml-auto inline-block text-sm underline"
+            >
+              Quên mật khẩu?
             </Link>
+          </div>
+          <Input
+            id="password"
+            type="password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            required
+          />
         </div>
+        <div className="flex items-center space-x-2">
+          <Checkbox id="remember-me" />
+          <Label
+            htmlFor="remember-me"
+            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          >
+            Ghi nhớ tôi
+          </Label>
+        </div>
+
+        {errorMessage && (
+          <p className="text-sm text-destructive">{errorMessage}</p>
+        )}
+
+        <Button type="submit" className="w-full" disabled={isSubmitting}>
+          {isSubmitting ? "Đang đăng nhập..." : "Đăng nhập"}
+        </Button>
+        <Button variant="outline" className="w-full" type="button">
+          Đăng nhập với Google
+        </Button>
+      </form>
+
+      <div className="mt-4 text-center text-sm">
+        Chưa có tài khoản?{" "}
+        <Link href="/register" className="underline">
+          Đăng ký
+        </Link>
+      </div>
     </>
-  )
+  );
 }

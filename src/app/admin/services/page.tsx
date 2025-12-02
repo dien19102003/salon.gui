@@ -2,6 +2,10 @@
 'use client';
 
 import * as React from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { MoreHorizontal, PlusCircle, ArrowUpRight } from 'lucide-react';
+
 import {
   Card,
   CardContent,
@@ -10,7 +14,6 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { services as allServices } from '@/lib/data';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,61 +21,95 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { MoreHorizontal, PlusCircle, ArrowUpRight } from 'lucide-react';
-import Image from 'next/image';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { DataTable, type ColumnDef, type FetchData } from '@/components/ui/data-table';
-import type { Service } from '@/lib/data';
-import Link from 'next/link';
+import { salonApi } from '@/lib/api-client';
 
-const fetchServices: FetchData<Service> = async (page, size) => {
-  // In a real app, you would fetch this from an API
-  // const response = await fetch(`/api/services?page=${page}&size=${size}`);
-  // const result: ApiResponse<Service> = await response.json();
-  // return result;
+type ServiceRow = {
+  id: string;
+  code?: string | null;
+  name: string;
+  description?: string | null;
+  estimatedTime: number;
+  state: string;
+  image?: {
+    imageUrl?: string | null;
+    imageHint?: string | null;
+  } | null;
+  category?: string | null;
+  duration?: number | null;
+  price?: number | null;
+};
 
-  const total = allServices.length;
-  const pageCount = Math.ceil(total / size);
-  const start = (page - 1) * size;
-  const end = start + size;
-  const data = allServices.slice(start, end);
+// Gọi API thật: POST /Service/GetPage
+const fetchServices: FetchData<ServiceRow> = async (page, size) => {
+  const body = {
+    page,
+    size,
+  };
 
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        meta: {
-          traceId: `trace-${Date.now()}`,
-          success: true,
-          total,
-          page,
-          size,
-          pageCount,
-          canNext: page < pageCount,
-          canPrev: page > 1,
-        },
-        data,
-      });
-    }, 300);
-  });
+  const response = await salonApi.post<any>('/Service/GetPage', body);
+
+  const apiMeta = response.meta ?? {
+    traceId: response.traceId ?? `trace-${Date.now()}`,
+    success: true,
+    total: response.total ?? 0,
+    page: response.page ?? page,
+    size: response.size ?? size,
+    pageCount: response.pageCount ?? 0,
+    canNext: response.canNext ?? false,
+    canPrev: response.canPrev ?? false,
+  };
+
+  const items: ServiceRow[] = (response.data ?? []).map((item: any) => ({
+    id: item.id,
+    code: item.code,
+    name: item.name,
+    description: item.description,
+    estimatedTime: item.estimatedTime,
+    state: item.state,
+    image: item.image ?? null,
+    category: item.category ?? null,
+    duration: item.duration ?? item.estimatedTime ?? null,
+    price: item.price ?? null,
+  }));
+
+  return {
+    meta: apiMeta,
+    data: items,
+  };
 };
 
 export default function ServicesPage() {
 
-  const columns: ColumnDef<Service>[] = [
+  const columns: ColumnDef<ServiceRow>[] = [
     {
       key: 'image',
       title: 'Ảnh',
-      render: (_, record) => (
-        <Image
-          alt={record.name}
-          className="aspect-square rounded-md object-cover"
-          height="56"
-          src={record.image.imageUrl}
-          width="56"
-          data-ai-hint={record.image.imageHint}
-        />
-      )
+      render: (_, record) => {
+        const imageUrl = record.image?.imageUrl ?? undefined;
+        const imageHint = record.image?.imageHint ?? '';
+
+        if (!imageUrl) {
+          return (
+            <div className="flex h-14 w-14 items-center justify-center rounded-md bg-muted text-xs text-muted-foreground">
+              N/A
+            </div>
+          );
+        }
+
+        return (
+          <Image
+            alt={record.name}
+            className="aspect-square rounded-md object-cover"
+            height={56}
+            src={imageUrl}
+            width={56}
+            data-ai-hint={imageHint}
+          />
+        );
+      }
     },
     {
       key: 'name',
@@ -83,18 +120,25 @@ export default function ServicesPage() {
     {
       key: 'category',
       title: 'Danh mục',
-      render: (_, record) => <Badge variant="secondary">{record.category}</Badge>
+      render: (_, record) => (
+        <Badge variant="secondary">
+          {record.category || 'Không có'}
+        </Badge>
+      )
     },
     {
       key: 'duration',
       title: 'Thời lượng',
-      render: (_, record) => `${record.duration} phút`
+      render: (_, record) => `${record.duration ?? record.estimatedTime} phút`
     },
     {
       key: 'price',
       title: 'Giá mặc định',
       pathValue: 'price',
-      render: (value) => `$${Number(value).toFixed(2)}`
+      render: (value) => {
+        const numeric = Number(value ?? 0);
+        return numeric > 0 ? `$${numeric.toFixed(2)}` : 'Chưa thiết lập';
+      }
     },
     {
         key: 'status',

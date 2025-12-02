@@ -2,6 +2,9 @@
 'use client';
 
 import * as React from 'react';
+import Link from 'next/link';
+import { MoreHorizontal, PlusCircle, ArrowUpRight } from 'lucide-react';
+
 import {
   Card,
   CardContent,
@@ -10,7 +13,6 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { staffGroups as allStaffGroups } from '@/lib/data';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,45 +20,53 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { MoreHorizontal, PlusCircle, ArrowUpRight } from 'lucide-react';
 import { DataTable, type ColumnDef, type FetchData } from '@/components/ui/data-table';
-import type { StaffGroup } from '@/lib/data';
-import Link from 'next/link';
+import { salonApi } from '@/lib/api-client';
 
-// Simulate an API call
-const fetchStaffGroups: FetchData<StaffGroup> = async (page, size) => {
-    // In a real app, you would fetch this from an API
-    // const response = await fetch(`/api/staff-groups?page=${page}&size=${size}`);
-    // const result: ApiResponse<StaffGroup> = await response.json();
-    // return result;
+type StaffGroupRow = {
+  id: string;
+  code?: string | null;
+  name: string;
+  note?: string | null;
+  memberCount?: number;
+};
 
-  const total = allStaffGroups.length;
-  const pageCount = Math.ceil(total / size);
-  const start = (page - 1) * size;
-  const end = start + size;
-  const data = allStaffGroups.slice(start, end);
+// Gọi API thật: POST /StaffGroup/GetPage
+const fetchStaffGroups: FetchData<StaffGroupRow> = async (page, size) => {
+  const body = {
+    page,
+    size,
+  };
 
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        meta: {
-          traceId: `trace-${Date.now()}`,
-          success: true,
-          total,
-          page,
-          size,
-          pageCount,
-          canNext: page < pageCount,
-          canPrev: page > 1,
-        },
-        data,
-      });
-    }, 300); // Simulate network delay
-  });
+  const response = await salonApi.post<any>('/StaffGroup/GetPage', body);
+
+  const apiMeta = response.meta ?? {
+    traceId: response.traceId ?? `trace-${Date.now()}`,
+    success: true,
+    total: response.total ?? 0,
+    page: response.page ?? page,
+    size: response.size ?? size,
+    pageCount: response.pageCount ?? 0,
+    canNext: response.canNext ?? false,
+    canPrev: response.canPrev ?? false,
+  };
+
+  const items: StaffGroupRow[] = (response.data ?? []).map((item: any) => ({
+    id: item.id,
+    code: item.code,
+    name: item.name,
+    note: item.note,
+    memberCount: item.memberCount ?? 0,
+  }));
+
+  return {
+    meta: apiMeta,
+    data: items,
+  };
 };
 
 export default function StaffGroupsPage() {
-  const columns: ColumnDef<StaffGroup>[] = [
+  const columns: ColumnDef<StaffGroupRow>[] = [
     {
       key: 'name',
       title: 'Tên nhóm',
@@ -64,9 +74,9 @@ export default function StaffGroupsPage() {
       render: (value) => <span className="font-medium">{value}</span>
     },
     {
-      key: 'description',
-      title: 'Mô tả',
-      pathValue: 'description',
+      key: 'note',
+      title: 'Ghi chú',
+      pathValue: 'note',
     },
     {
       key: 'members',

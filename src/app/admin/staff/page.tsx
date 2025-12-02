@@ -2,6 +2,9 @@
 'use client';
 
 import * as React from 'react';
+import Link from 'next/link';
+import { MoreHorizontal, PlusCircle, Star, ArrowUpRight } from 'lucide-react';
+
 import {
   Card,
   CardContent,
@@ -10,7 +13,6 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { stylists as allStylists, staffGroups } from '@/lib/data';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,54 +20,88 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { MoreHorizontal, PlusCircle, Star, ArrowUpRight } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { DataTable, type ColumnDef, type FetchData } from '@/components/ui/data-table';
-import type { Stylist } from '@/lib/data';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import Link from 'next/link';
+import { salonApi } from '@/lib/api-client';
+import { staffGroups } from '@/lib/data';
 
-const fetchStylists: FetchData<Stylist> = async (page, size) => {
-    // In a real app, you would fetch this from an API
-    // const response = await fetch(`/api/stylists?page=${page}&size=${size}`);
-    // const result: ApiResponse<Stylist> = await response.json();
-    // return result;
+type StaffRow = {
+  id: string;
+  code?: string | null;
+  name: string;
+  phone?: string | null;
+  email?: string | null;
+  state: string;
+  image?: {
+    imageUrl?: string | null;
+    imageHint?: string | null;
+  } | null;
+  groupId?: string | null;
+  rating?: number | null;
+  reviews?: number | null;
+};
 
-    const total = allStylists.length;
-    const pageCount = Math.ceil(total / size);
-    const start = (page - 1) * size;
-    const end = start + size;
-    const data = allStylists.slice(start, end);
+// Gọi API thật: POST /Staff/GetPage
+const fetchStylists: FetchData<StaffRow> = async (page, size) => {
+  const body = {
+    page,
+    size,
+  };
 
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        meta: {
-          traceId: `trace-${Date.now()}`,
-          success: true,
-          total,
-          page,
-          size,
-          pageCount,
-          canNext: page < pageCount,
-          canPrev: page > 1,
-        },
-        data,
-      });
-    }, 300);
-  });
+  const response = await salonApi.post<any>('/Staff/GetPage', body);
+
+  const apiMeta = response.meta ?? {
+    traceId: response.traceId ?? `trace-${Date.now()}`,
+    success: true,
+    total: response.total ?? 0,
+    page: response.page ?? page,
+    size: response.size ?? size,
+    pageCount: response.pageCount ?? 0,
+    canNext: response.canNext ?? false,
+    canPrev: response.canPrev ?? false,
+  };
+
+  const items: StaffRow[] = (response.data ?? []).map((item: any) => ({
+    id: item.id,
+    code: item.code,
+    name: item.name,
+    phone: item.phone,
+    email: item.email,
+    state: item.state,
+    image: item.account?.avatarLink
+      ? {
+          imageUrl: item.account.avatarLink,
+          imageHint: item.account.name,
+        }
+      : null,
+    groupId: item.groupId ?? null,
+    rating: item.rating ?? null,
+    reviews: item.reviews ?? null,
+  }));
+
+  return {
+    meta: apiMeta,
+    data: items,
+  };
 };
 
 export default function StaffPage() {
 
-  const columns: ColumnDef<Stylist>[] = [
+  const columns: ColumnDef<StaffRow>[] = [
     {
       key: 'name',
       title: 'Stylist',
       render: (_, record) => (
         <div className="flex items-center gap-4">
             <Avatar className="h-12 w-12">
-                <AvatarImage src={record.image.imageUrl} alt={record.name} data-ai-hint={record.image.imageHint} />
+                {record.image?.imageUrl && (
+                  <AvatarImage
+                    src={record.image.imageUrl}
+                    alt={record.name}
+                    data-ai-hint={record.image.imageHint ?? ''}
+                  />
+                )}
                 <AvatarFallback>{record.name.charAt(0)}</AvatarFallback>
             </Avatar>
             <div className="font-medium">{record.name}</div>
@@ -86,7 +122,9 @@ export default function StaffPage() {
       render: (_, record) => (
         <div className="flex items-center gap-1">
             <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
-            <span>{record.rating.toFixed(1)} ({record.reviews} reviews)</span>
+            <span>
+              {(record.rating ?? 0).toFixed(1)} ({record.reviews ?? 0} reviews)
+            </span>
         </div>
         )
     },

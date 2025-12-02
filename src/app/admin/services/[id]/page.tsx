@@ -1,7 +1,8 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
 import {
   Card,
   CardContent,
@@ -28,7 +29,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { services, branches, type Service, type BranchPrice } from '@/lib/data';
+import { branches, type BranchPrice } from '@/lib/data';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Settings2 } from 'lucide-react';
 import Link from 'next/link';
@@ -37,23 +38,91 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { salonApi } from '@/lib/api-client';
 
-export default function ServiceDetailPage({ params }: { params: { id: string } }) {
-  const service = services.find(s => s.id === params.id);
-  
-  // State for the price management dialog
+type ServiceDetail = {
+  id: string;
+  name: string;
+  description?: string | null;
+  longDescription?: string | null;
+  duration?: number | null;
+  price?: number | null;
+  image?: {
+    imageUrl?: string | null;
+    imageHint?: string | null;
+  } | null;
+  category?: string | null;
+  branchPricing: BranchPrice[];
+};
+
+export default function ServiceDetailPage() {
+  const params = useParams<{ id: string }>();
+  const serviceId = params?.id;
+  const [service, setService] = useState<ServiceDetail | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
-  const [branchPrices, setBranchPrices] = useState(service?.branchPricing || []);
+  const [branchPrices, setBranchPrices] = useState<BranchPrice[]>([]);
 
-  if (!service) {
+  useEffect(() => {
+    if (!serviceId) {
+      return;
+    }
+
+    const fetchService = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const response = await salonApi.get<any>(`/Service/${serviceId}`);
+
+        // Giả định API trả về { data: {...}, meta: {...} } hoặc trực tiếp object
+        const raw = (response?.data ?? response) as any;
+
+        const mapped: ServiceDetail = {
+          id: raw.id,
+          name: raw.name,
+          description: raw.description,
+          longDescription: raw.longDescription ?? raw.description,
+          duration: raw.duration ?? raw.estimatedTime ?? null,
+          price: raw.price ?? null,
+          image: raw.image ?? null,
+          category: raw.category ?? null,
+          branchPricing: (raw.branchPricing ?? []) as BranchPrice[],
+        };
+
+        setService(mapped);
+        setBranchPrices(mapped.branchPricing ?? []);
+      } catch (err) {
+        console.error('Không thể tải chi tiết dịch vụ:', err);
+        setError('Không thể tải chi tiết dịch vụ. Vui lòng thử lại sau.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchService();
+  }, [serviceId]);
+
+  if (loading) {
     return (
-        <div className="container py-12 md:py-20 text-center">
-            <h1 className="text-2xl font-bold">Service not found</h1>
-            <Button asChild variant="link">
-                <Link href="/admin/services">Go back to services</Link>
-            </Button>
-        </div>
-    )
+      <div className="container py-12 md:py-20 text-center">
+        <p className="text-muted-foreground">Đang tải chi tiết dịch vụ...</p>
+      </div>
+    );
+  }
+
+  if (error || !service) {
+    return (
+      <div className="container py-12 md:py-20 text-center">
+        <h1 className="text-2xl font-bold">
+          {error ?? 'Không tìm thấy dịch vụ'}
+        </h1>
+        <Button asChild variant="link">
+          <Link href="/admin/services">Quay lại danh sách dịch vụ</Link>
+        </Button>
+      </div>
+    );
   }
 
   const handlePriceChange = (branchId: string, price: number) => {
@@ -80,8 +149,7 @@ export default function ServiceDetailPage({ params }: { params: { id: string } }
   const handleSaveChanges = () => {
     // Here you would typically make an API call to save the changes
     console.log('Saving changes:', branchPrices);
-    // For demo purposes, we can update the service in memory, but this won't persist.
-    service.branchPricing = branchPrices;
+    // TODO: Gọi API cập nhật giá chi nhánh khi backend sẵn sàng
     setOpen(false);
   };
   
@@ -103,21 +171,30 @@ export default function ServiceDetailPage({ params }: { params: { id: string } }
              <div className="lg:col-span-1 flex flex-col gap-6">
                 <Card className="shadow-none border">
                     <CardHeader>
-                        <Image 
-                            src={service.image.imageUrl} 
-                            alt={service.name} 
-                            width={400} 
-                            height={400}
-                            className="w-full aspect-video object-cover rounded-lg"
-                        />
+                        {service.image?.imageUrl ? (
+                          <Image 
+                              src={service.image.imageUrl as string} 
+                              alt={service.name} 
+                              width={400} 
+                              height={400}
+                              className="w-full aspect-video object-cover rounded-lg"
+                          />
+                        ) : (
+                          <div className="flex aspect-video w-full items-center justify-center rounded-lg bg-muted text-sm text-muted-foreground">
+                            Không có ảnh
+                          </div>
+                        )}
                     </CardHeader>
                     <CardContent className="pt-4 space-y-2">
                         <CardTitle className="text-2xl">{service.name}</CardTitle>
-                        <Badge variant="outline">{service.category}</Badge>
-                        <CardDescription>{service.longDescription}</CardDescription>
+                        <Badge variant="outline">{service.category ?? 'Không có danh mục'}</Badge>
+                        <CardDescription>{service.longDescription ?? service.description}</CardDescription>
                     </CardContent>
                     <CardFooter>
-                         <p className="font-semibold text-lg">Default Price: ${service.price.toFixed(2)}</p>
+                         <p className="font-semibold text-lg">
+                           Default Price:{' '}
+                           {service.price != null ? `$${service.price.toFixed(2)}` : 'Chưa thiết lập'}
+                         </p>
                     </CardFooter>
                 </Card>
              </div>
@@ -146,7 +223,7 @@ export default function ServiceDetailPage({ params }: { params: { id: string } }
                                     <div className="grid gap-6 py-4">
                                     {branches.map(branch => {
                                         const branchPrice = priceMap.get(branch.id);
-                                        const price = branchPrice?.price ?? service.price;
+                                        const price = branchPrice?.price ?? service.price ?? 0;
                                         const isActive = branchPrice?.status === 'Active';
                                         
                                         return (
