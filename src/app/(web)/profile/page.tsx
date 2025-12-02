@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { format } from "date-fns";
+import { vi } from "date-fns/locale";
 
 import {
   Card,
@@ -19,75 +21,106 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { useIdentityStore } from "@/hooks/use-identity-store";
+import { useCustomer } from "@/context/customer-context";
 import { salonApi } from "@/lib/api-client";
 
-type CustomerDetail = {
+type BookingRow = {
   id: string;
   code?: string | null;
-  name: string;
-  email?: string | null;
-  phone?: string | null;
-  streetAddress?: string | null;
+  bookingDate: string;
+  startTime: number;
+  endTime: number;
+  siteName?: string | null;
+  staffName?: string | null;
+  state: number;
   note?: string | null;
+};
+
+const formatTime = (minutes: number): string => {
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+  return `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}`;
+};
+
+const getStateLabel = (state: number): string => {
+  const stateMap: Record<number, string> = {
+    1: 'Chờ xác nhận',
+    2: 'Đã xác nhận',
+    3: 'Đang phục vụ',
+    4: 'Đã hoàn thành',
+    5: 'Khách không đến',
+    6: 'Đã hủy',
+  };
+  return stateMap[state] || 'Không xác định';
+};
+
+const getStateVariant = (state: number): string => {
+  if (state === 2 || state === 4) return 'text-green-700 bg-green-50 border-green-200';
+  if (state === 1) return 'text-yellow-700 bg-yellow-50 border-yellow-200';
+  if (state === 6 || state === 5) return 'text-red-700 bg-red-50 border-red-200';
+  if (state === 3) return 'text-blue-700 bg-blue-50 border-blue-200';
+  return 'text-gray-700 bg-gray-50 border-gray-200';
 };
 
 export default function ProfilePage() {
   const { user, isAuthenticated, isLoading } = useIdentityStore();
-  const [customer, setCustomer] = useState<CustomerDetail | null>(null);
-  const [isLoadingCustomer, setIsLoadingCustomer] = useState(false);
+  const { customer, loading: loadingCustomer } = useCustomer();
+  const [bookings, setBookings] = useState<BookingRow[]>([]);
+  const [loadingBookings, setLoadingBookings] = useState(false);
 
   useEffect(() => {
-    const loadCustomer = async () => {
-      if (!user?.id) {
-        setCustomer(null);
+    const loadBookings = async () => {
+      if (!customer?.id) {
+        setBookings([]);
         return;
       }
 
-      setIsLoadingCustomer(true);
-
+      setLoadingBookings(true);
       try {
-        const response = await salonApi.get<any>(
-          `/Customer/GetDetailByAccountId/${encodeURIComponent(user.id)}`
-        );
+        const filter = {
+          page: 1,
+          size: 100,
+          customerId: {
+            method: 'Or',
+            values: [customer.id],
+          },
+        };
+        const response = await salonApi.post<any>('/Booking/GetPage', filter);
+        const bookingsData = (response.data ?? []) as any[];
 
-        const data = (response as any).data ?? response;
+        const mappedBookings: BookingRow[] = bookingsData.map((item: any) => ({
+          id: item.id,
+          code: item.code,
+          bookingDate: item.bookingDate,
+          startTime: item.startTime,
+          endTime: item.endTime,
+          siteName: item.site?.name ?? null,
+          staffName: item.staff?.name ?? null,
+          state: item.state,
+          note: item.note ?? null,
+        }));
 
-        setCustomer({
-          id: data.id,
-          code: data.code,
-          name: data.name,
-          email: data.email,
-          phone: data.phone,
-          streetAddress: data.streetAddress,
-          note: data.note,
-        });
-      } catch (error: any) {
-        // Nếu backend trả 400 vì chưa có khách hàng gắn với account,
-        // không coi là lỗi nghiêm trọng, chỉ đơn giản là chưa có hồ sơ.
-        if (error?.status !== 400) {
-          // eslint-disable-next-line no-console
-          console.error("Không thể tải thông tin khách hàng", error);
-        }
-
-        setCustomer(null);
+        setBookings(mappedBookings);
+      } catch (error) {
+        console.error('Failed to load bookings:', error);
+        setBookings([]);
       } finally {
-        setIsLoadingCustomer(false);
+        setLoadingBookings(false);
       }
     };
 
-    loadCustomer();
-  }, [user?.id]);
+    loadBookings();
+  }, [customer?.id]);
 
-  if (isLoading || isLoadingCustomer) {
+  if (isLoading || loadingCustomer) {
     return (
       <div className="container py-12 md:py-20">
-        <p>Đang tải hồ sơ...</p>
+        <Skeleton className="h-8 w-48 mb-4" />
+        <Skeleton className="h-64 w-full" />
       </div>
     );
   }
@@ -123,8 +156,9 @@ export default function ProfilePage() {
       </div>
 
       <Tabs defaultValue="profile" className="mt-12">
-        <TabsList className="grid w-full grid-cols-1 sm:grid-cols-2">
+        <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3">
           <TabsTrigger value="profile">Thông tin hồ sơ</TabsTrigger>
+          <TabsTrigger value="bookings">Lịch hẹn</TabsTrigger>
           <TabsTrigger value="account">Thông tin tài khoản</TabsTrigger>
         </TabsList>
 
@@ -147,16 +181,81 @@ export default function ProfilePage() {
                   <p className="font-medium">{customer.phone}</p>
                 </div>
               )}
-              {customer.streetAddress && (
+              {customer.code && (
                 <div className="space-y-1">
-                  <p className="text-sm text-muted-foreground">Địa chỉ</p>
-                  <p className="font-medium">{customer.streetAddress}</p>
+                  <p className="text-sm text-muted-foreground">Mã khách hàng</p>
+                  <p className="font-medium">{customer.code}</p>
                 </div>
               )}
-              {customer.note && (
-                <div className="space-y-1">
-                  <p className="text-sm text-muted-foreground">Ghi chú</p>
-                  <p className="font-medium">{customer.note}</p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="bookings">
+          <Card>
+            <CardHeader>
+              <CardTitle>Lịch hẹn của tôi</CardTitle>
+              <CardDescription>
+                Danh sách các lịch hẹn đã đặt tại salon.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {loadingBookings ? (
+                <div className="space-y-4">
+                  <Skeleton className="h-12 w-full" />
+                  <Skeleton className="h-12 w-full" />
+                  <Skeleton className="h-12 w-full" />
+                </div>
+              ) : bookings.length === 0 ? (
+                <p className="text-center text-muted-foreground py-8">
+                  Bạn chưa có lịch hẹn nào.
+                </p>
+              ) : (
+                <div className="rounded-md border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Mã đặt lịch</TableHead>
+                        <TableHead>Ngày & Giờ</TableHead>
+                        <TableHead>Chi nhánh</TableHead>
+                        <TableHead>Nhà tạo mẫu</TableHead>
+                        <TableHead>Trạng thái</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {bookings.map((booking) => (
+                        <TableRow key={booking.id}>
+                          <TableCell className="font-medium">
+                            {booking.code || 'N/A'}
+                          </TableCell>
+                          <TableCell>
+                            <div>
+                              <div className="font-medium">
+                                {format(new Date(booking.bookingDate), 'PPP', { locale: vi })}
+                              </div>
+                              <div className="text-sm text-muted-foreground">
+                                {formatTime(booking.startTime)} - {formatTime(booking.endTime)}
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            {booking.siteName || 'N/A'}
+                          </TableCell>
+                          <TableCell>
+                            {booking.staffName || 'Chưa chỉ định'}
+                          </TableCell>
+                          <TableCell>
+                            <Badge
+                              variant="outline"
+                              className={cn(getStateVariant(booking.state), 'font-medium py-1')}
+                            >
+                              {getStateLabel(booking.state)}
+                            </Badge>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
                 </div>
               )}
             </CardContent>

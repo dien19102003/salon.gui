@@ -3,6 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { SiteProvider } from '@/context/site-branch-context';
 import {
   SidebarProvider,
   Sidebar,
@@ -37,6 +38,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
 import { Inter } from 'next/font/google';
+import { useSite } from '@/context/site-branch-context';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 
 const fontSans = Inter({
@@ -57,6 +60,7 @@ function AdminHeader() {
   const pathname = usePathname();
   const currentPage = menuItems.find(item => pathname.startsWith(item.href) && (item.href === '/admin' ? pathname === item.href : true));
   const pageTitle = currentPage ? currentPage.label : 'Admin';
+  const { sites, selectedSiteId, setSelectedSiteId, loading: sitesLoading } = useSite();
     
   return (
     <header className="fixed top-0 left-0 right-0 z-30 flex h-16 items-center gap-4 border-b bg-background px-4 shadow-sm md:px-6">
@@ -68,6 +72,23 @@ function AdminHeader() {
         </div>
 
         <div className="flex flex-1 items-center justify-end gap-4">
+            {!sitesLoading && sites.length > 0 && (
+              <Select
+                value={selectedSiteId ?? ''}
+                onValueChange={(value) => setSelectedSiteId(value || null)}
+              >
+                <SelectTrigger className="w-[200px]">
+                  <SelectValue placeholder="Chọn chi nhánh" />
+                </SelectTrigger>
+                <SelectContent>
+                  {sites.map((site) => (
+                    <SelectItem key={site.id} value={site.id}>
+                      {site.name} {site.code && `(${site.code})`}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-10 w-10 rounded-full">
@@ -151,10 +172,16 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
     )
 }
 
+import { CustomerProvider } from '@/context/customer-context';
+
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
-        <AdminLayoutContent>{children}</AdminLayoutContent>
+      <SiteProvider>
+        <CustomerProvider>
+          <AdminLayoutContent>{children}</AdminLayoutContent>
+        </CustomerProvider>
+      </SiteProvider>
     </SidebarProvider>
   );
 }

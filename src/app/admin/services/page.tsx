@@ -25,6 +25,7 @@ import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { DataTable, type ColumnDef, type FetchData } from '@/components/ui/data-table';
 import { salonApi } from '@/lib/api-client';
+import { useSite } from '@/context/site-branch-context';
 
 type ServiceRow = {
   id: string;
@@ -42,14 +43,22 @@ type ServiceRow = {
   price?: number | null;
 };
 
-// Gọi API thật: POST /Service/GetPage
-const fetchServices: FetchData<ServiceRow> = async (page, size) => {
-  const body = {
-    page,
-    size,
-  };
+export default function ServicesPage() {
+  const { selectedSiteId } = useSite();
 
-  const response = await salonApi.post<any>('/Service/GetPage', body);
+  // Gọi API thật: POST /Service/GetPage
+  const fetchServices: FetchData<ServiceRow> = async (page, size) => {
+    const body: any = {
+      page,
+      size,
+    };
+
+    // Thêm siteId vào filter nếu có
+    if (selectedSiteId) {
+      body.siteId = selectedSiteId;
+    }
+
+    const response = await salonApi.post<any>('/Service/GetPage', body);
 
   const apiMeta = response.meta ?? {
     traceId: response.traceId ?? `trace-${Date.now()}`,
@@ -75,13 +84,11 @@ const fetchServices: FetchData<ServiceRow> = async (page, size) => {
     price: item.price ?? null,
   }));
 
-  return {
-    meta: apiMeta,
-    data: items,
+    return {
+      meta: apiMeta,
+      data: items,
+    };
   };
-};
-
-export default function ServicesPage() {
 
   const columns: ColumnDef<ServiceRow>[] = [
     {
@@ -194,7 +201,11 @@ export default function ServicesPage() {
         </div>
       </CardHeader>
       <CardContent>
-        <DataTable columns={columns} fetchData={fetchServices} />
+        <DataTable 
+          columns={columns} 
+          fetchData={fetchServices}
+          fetchContext={selectedSiteId}
+        />
       </CardContent>
     </Card>
   );

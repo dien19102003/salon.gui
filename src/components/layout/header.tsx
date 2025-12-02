@@ -16,8 +16,7 @@ import {
 } from "@/components/ui/select"
 import { cn } from '@/lib/utils';
 import { Logo } from '../icons/logo';
-import { useBranch } from '@/context/site-branch-context';
-import { branches } from '@/lib/data';
+import { useSite } from '@/context/site-branch-context';
 
 
 const navLinks = [
@@ -29,22 +28,24 @@ const navLinks = [
 ];
 
 function BranchSelector() {
-    const { selectedBranch, setSelectedBranch } = useBranch();
-    
-    // Trong ứng dụng thực tế, dữ liệu này có thể đến từ API
-    const availableBranches = branches;
+    const { sites, selectedSiteId, setSelectedSiteId, loading } = useSite();
 
     return (
         <div className="flex items-center gap-2">
             <Building className="h-4 w-4 text-muted-foreground" />
-            <Select value={selectedBranch} onValueChange={setSelectedBranch}>
+            <Select 
+                value={selectedSiteId ?? ''} 
+                onValueChange={(value) => setSelectedSiteId(value || null)}
+                disabled={loading}
+            >
                 <SelectTrigger className="w-auto border-none bg-transparent shadow-none focus:ring-0 text-xs text-muted-foreground pr-2 h-auto py-0">
-                    <SelectValue placeholder="Chọn chi nhánh" />
+                    <SelectValue placeholder={loading ? "Đang tải..." : "Chọn chi nhánh"} />
                 </SelectTrigger>
                 <SelectContent>
-                    <SelectItem value="all">Tất cả chi nhánh</SelectItem>
-                    {availableBranches.map(branch => (
-                        <SelectItem key={branch.id} value={branch.id}>{branch.name}</SelectItem>
+                    {sites.map(site => (
+                        <SelectItem key={site.id} value={site.id}>
+                            {site.name} {site.code && `(${site.code})`}
+                        </SelectItem>
                     ))}
                 </SelectContent>
             </Select>

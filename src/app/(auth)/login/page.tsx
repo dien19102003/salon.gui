@@ -9,10 +9,12 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Logo } from "@/components/icons/logo";
-import { identityApi, authUser, salonApi } from "@/lib/api-client";
+import { identityApi, authUser } from "@/lib/api-client";
+import { useCustomer } from "@/context/customer-context";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { loadCustomer } = useCustomer();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -34,25 +36,26 @@ export default function LoginPage() {
         "/Identity/Login/Password"
       );
 
-      // Ngay sau khi đăng nhập: tách accessToken để lấy thông tin user
-      // rồi gọi API Customer/GetDetailByAccountId để load thông tin khách hàng.
+      // Ngay sau khi đăng nhập: load thông tin customer vào context
       const currentUser = authUser.getCurrentUser();
-
       if (currentUser?.id) {
         try {
-          await salonApi.get(
-            `/Customer/GetDetailByAccountId/${encodeURIComponent(
-              currentUser.id
-            )}`
-          );
-        } catch (customerError) {
+          console.log('Loading customer after login, accountId:', currentUser.id);
+          await loadCustomer();
+          console.log('Customer loaded successfully');
+        } catch (customerError: any) {
           // Không chặn flow đăng nhập nếu không lấy được thông tin khách hàng
-          // eslint-disable-next-line no-console
           console.error(
             "Không thể tải thông tin khách hàng sau khi đăng nhập",
             customerError
           );
+          // Nếu là 404, có thể customer chưa được tạo - không phải lỗi nghiêm trọng
+          if (customerError?.status !== 404 && customerError?.response?.status !== 404) {
+            console.warn('Customer load failed with non-404 error:', customerError);
+          }
         }
+      } else {
+        console.warn('No current user after login');
       }
 
       router.push("/");

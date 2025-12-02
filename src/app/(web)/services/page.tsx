@@ -13,7 +13,7 @@ import {
 import { services as allServices } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Clock } from 'lucide-react';
-import { useBranch } from '@/context/site-branch-context';
+import { useSite } from '@/context/site-branch-context';
 import { useMemo } from 'react';
 
 // export const metadata = {
@@ -22,10 +22,10 @@ import { useMemo } from 'react';
 // };
 
 export default function ServicesPage() {
-  const { selectedBranch } = useBranch();
+  const { selectedSiteId } = useSite();
 
   const filteredServices = useMemo(() => {
-    if (selectedBranch === 'all') {
+    if (!selectedSiteId) {
       return allServices;
     }
     return allServices.filter(service => {
@@ -34,15 +34,15 @@ export default function ServicesPage() {
         return true;
       }
       // Hoặc nếu có giá hoạt động cho chi nhánh đã chọn
-      return service.branchPricing.some(p => p.branchId === selectedBranch && p.status === 'Active');
+      return service.branchPricing.some(p => p.branchId === selectedSiteId && p.status === 'Active');
     });
-  }, [selectedBranch]);
+  }, [selectedSiteId]);
 
   const getPriceForBranch = (service) => {
-    if (selectedBranch === 'all') {
+    if (!selectedSiteId) {
       return service.price; // Hiển thị giá mặc định
     }
-    const branchPrice = service.branchPricing.find(p => p.branchId === selectedBranch);
+    const branchPrice = service.branchPricing.find(p => p.branchId === selectedSiteId);
     return branchPrice ? branchPrice.price : service.price;
   };
 
